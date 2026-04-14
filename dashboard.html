@@ -1,13 +1,49 @@
-<h2>المستخدمين:</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
 
-<div>
-  <p>👤 أحمد - 25 سنة</p>
-  <button>اهتمام ❤️</button>
-</div>
+  <h1>مرحبا بك 👋</h1>
 
-<br>
+  <h2>المستخدمين:</h2>
 
-<div>
-  <p>👤 محمد - 30 سنة</p>
-  <button>اهتمام ❤️</button>
-</div>
+  <div id="users"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+      authDomain: "marriage-app-3b2d2.firebaseapp.com",
+      projectId: "marriage-app-3b2d2",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const usersDiv = document.getElementById("users");
+
+    async function loadUsers() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+
+      querySnapshot.forEach((doc) => {
+        const user = doc.data();
+
+        usersDiv.innerHTML += `
+          <div>
+            <p>👤 ${user.name} - ${user.age} سنة</p>
+            <button>اهتمام ❤️</button>
+          </div>
+          <br>
+        `;
+      });
+    }
+
+    loadUsers();
+  </script>
+
+</body>
+</html>
