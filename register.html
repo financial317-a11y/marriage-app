@@ -7,6 +7,7 @@
 
   <h1>إنشاء حساب</h1>
   <input id="name" type="text" placeholder="اسمك"><br><br>
+  <input id="image" type="text" placeholder="رابط صورتك"><br><br>
   <input id="email" type="email" placeholder="الإيميل"><br><br>
   <input id="password" type="password" placeholder="الباسورد"><br><br>
 
@@ -29,6 +30,7 @@
 
     window.register = function() {
       const name = document.getElementById("name").value;
+      const image = document.getElementById("image").value;
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
@@ -39,7 +41,8 @@
 
          await addDoc(collection(db, "users"), {
            name: name,
-           age: 20
+           age: 20,
+           image: image
          }); 
 
          alert("تم إنشاء الحساب 🎉");
