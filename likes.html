@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Likes</title>
+</head>
+<body>
+
+  <h1>❤️ الناس اللي عملت لك لايك</h1>
+
+  <div id="likes"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+      authDomain: "marriage-app-3b2d2.firebaseapp.com",
+      projectId: "marriage-app-3b2d2",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const likesDiv = document.getElementById("likes");
+
+    async function loadLikes() {
+      const querySnapshot = await getDocs(collection(db, "likes"));
+
+      querySnapshot.forEach((doc) => {
+        const like = doc.data();
+
+        likesDiv.innerHTML += `
+          <p>👤 ${like.user} عمل لك لايك ❤️</p>
+        `;
+      });
+    }
+
+    loadLikes();
+  </script>
+
+</body>
+</html>
