@@ -45,10 +45,12 @@
     loadUsers();
     window.likeUser = async function(name) {
 
-  await addDoc(collection(db, "likes"), {
-    user: "currentUser",
-    likedUser: name
-  });
+  const currentUser = localStorage.getItem("userEmail");
+
+await addDoc(collection(db, "likes"), {
+  user: currentUser,
+  likedUser: name
+});
 
   alert("عملت لايك ❤️");
 };
