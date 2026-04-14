@@ -4,33 +4,67 @@
   <title>Dashboard</title>
 
   <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-    }
+  body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+  }
 
-    .card {
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin: 15px;
-      border-radius: 10px;
-    }
+  .hearts {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
 
-    img {
-      border-radius: 50%;
-    }
+  .heart {
+    position: absolute;
+    color: rgba(255,255,255,0.2);
+    font-size: 30px;
+    animation: float 6s infinite;
+  }
 
-    button {
-      background: red;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-    }
-  </style>
+  @keyframes float {
+    0% { transform: translateY(100vh); }
+    100% { transform: translateY(-10vh); }
+  }
 
+  .card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    margin: 15px;
+    border-radius: 15px;
+  }
+
+  img {
+    border-radius: 50%;
+    width: 80px;
+  }
+
+  button {
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
+  <div class="hearts">
+  <div class="heart" style="left:10%">❤️</div>
+  <div class="heart" style="left:30%">❤️</div>
+  <div class="heart" style="left:50%">❤️</div>
+  <div class="heart" style="left:70%">❤️</div>
+  <div class="heart" style="left:90%">❤️</div>
+</div>
 
   <h1>مرحبا بك 👋</h1>
   
