@@ -15,6 +15,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -24,15 +25,24 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     window.register = function() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
       createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          alert("تم إنشاء الحساب 🎉");
-        })
+        .then(async () => {
+
+         const email = document.getElementById("email").value;
+
+         await addDoc(collection(db, "users"), {
+           name: email,
+           age: 20
+         }); 
+
+         alert("تم إنشاء الحساب 🎉");
+       })
         .catch((error) => {
           alert(error.message);
         });
