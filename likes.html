@@ -30,9 +30,13 @@
       querySnapshot.forEach((doc) => {
         const like = doc.data();
 
-        likesDiv.innerHTML += `
-          <p>👤 ${like.user} عمل لك لايك ❤️</p>
-        `;
+       const currentUser = localStorage.getItem("userEmail");
+
+if (like.likedUser === currentUser) {
+  likesDiv.innerHTML += `
+    <p>👤 ${like.user} عمل لك لايك ❤️</p>
+  `;
+}
       });
     }
 
