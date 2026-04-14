@@ -13,7 +13,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -35,7 +35,7 @@
         usersDiv.innerHTML += `
           <div>
             <p>👤 ${user.name} - ${user.age} سنة</p>
-            <button>اهتمام ❤️</button>
+           <button onclick="likeUser('${user.name}')">اهتمام ❤️</button>
           </div>
           <br>
         `;
@@ -43,6 +43,15 @@
     }
 
     loadUsers();
+    window.likeUser = async function(name) {
+
+  await addDoc(collection(db, "likes"), {
+    user: "currentUser",
+    likedUser: name
+  });
+
+  alert("عملت لايك ❤️");
+};
   </script>
 
 </body>
