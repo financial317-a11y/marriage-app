@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+    }
+
+    img {
+      border-radius: 50%;
+      width: 120px;
+    }
+  </style>
+
+</head>
+<body>
+
+  <h1>👤 بروفايلي</h1>
+
+  <img id="profileImage"><br><br>
+  <h2 id="profileName"></h2>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+      authDomain: "marriage-app-3b2d2.firebaseapp.com",
+      projectId: "marriage-app-3b2d2",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const currentUser = localStorage.getItem("userEmail");
+
+    async function loadProfile() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+
+      querySnapshot.forEach((doc) => {
+        const user = doc.data();
+
+        if (user.name === currentUser || user.name === currentUser) {
+          document.getElementById("profileName").innerText = user.name;
+          document.getElementById("profileImage").src = user.image;
+        }
+      });
+    }
+
+    loadProfile();
+  </script>
+
+</body>
+</html>
