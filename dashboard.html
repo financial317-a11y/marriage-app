@@ -2,6 +2,33 @@
 <html>
 <head>
   <title>Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 15px;
+      border-radius: 10px;
+    }
+
+    img {
+      border-radius: 50%;
+    }
+
+    button {
+      background: red;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+
 </head>
 <body>
 
@@ -33,8 +60,9 @@
         const user = doc.data();
 
         usersDiv.innerHTML += `
-          <div>
-            <p>👤 ${user.name} - ${user.age} سنة</p>
+         <div class="card">
+            <img src="${user.image}" width="80"><br>
+            <p>👤 ${user.name}</p>
            <button onclick="likeUser('${user.name}')">اهتمام ❤️</button>
           </div>
           <br>
