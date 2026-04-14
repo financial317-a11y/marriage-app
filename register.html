@@ -7,11 +7,37 @@
 
   <h1>إنشاء حساب</h1>
 
-  <input type="text" placeholder="الاسم"><br><br>
-  <input type="email" placeholder="الإيميل"><br><br>
-  <input type="password" placeholder="الباسورد"><br><br>
+  <input id="email" type="email" placeholder="الإيميل"><br><br>
+  <input id="password" type="password" placeholder="الباسورد"><br><br>
 
-  <button>تسجيل</button>
+  <button onclick="register()">تسجيل</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+      authDomain: "marriage-app-3b2d2.firebaseapp.com",
+      projectId: "marriage-app-3b2d2",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.register = function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("تم إنشاء الحساب 🎉");
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+  </script>
 
 </body>
 </html>
