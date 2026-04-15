@@ -12,12 +12,9 @@
     text-align: center;
   }
 
-  /* قلوب خفيفة في الخلفية */
   body::before {
     content: "❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️";
     position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     font-size: 30px;
@@ -31,97 +28,75 @@
 
   .card {
     background: white;
-    color: black;
     padding: 20px;
-    margin: 20px auto;
-    border-radius: 15px;
-    width: 260px;
+    border-radius: 20px;
+    width: 250px;
+    margin: auto;
+    text-align: center;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
 
-  img {
+  .card img {
     border-radius: 50%;
     width: 90px;
-    margin-bottom: 10px;
   }
 
   button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 10px;
-  margin: 5px;
-  cursor: pointer;
-  font-size: 18px;
-  background: yellow;
-}
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    background: yellow;
+  }
 
   button:hover {
-  background: gold;
-}
-  .card {
-  background: white;
-  padding: 20px;
-  border-radius: 20px;
-  width: 250px;
-  margin: auto;
-  text-align: center;
-}
-
-.card img {
-  border-radius: 50%;
-}
-  .card {
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
+    background: gold;
+  }
 </style>
 </head>
+
 <body>
-  <div class="hearts">
-  <div class="heart" style="left:10%">❤️</div>
-  <div class="heart" style="left:30%">❤️</div>
-  <div class="heart" style="left:50%">❤️</div>
-  <div class="heart" style="left:70%">❤️</div>
-  <div class="heart" style="left:90%">❤️</div>
-</div>
 
-  <h1>مرحبا بك 👋</h1>
-  
-  <a href="profile.html">بروفايلي 👤</a><br><br>
+<h1>مرحبا بك 👋</h1>
+<a href="profile.html">بروفايلي 👤</a><br><br>
 
-  <h2>المستخدمين:</h2>
+<h2>المستخدمين:</h2>
+<div id="users"></div>
 
-  <div id="users"></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+  authDomain: "marriage-app-3b2d2.firebaseapp.com",
+  projectId: "marriage-app-3b2d2",
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
-      authDomain: "marriage-app-3b2d2.firebaseapp.com",
-      projectId: "marriage-app-3b2d2",
-    };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+const usersDiv = document.getElementById("users");
 
-    const usersDiv = document.getElementById("users");
-
-    async function loadUsers() {
-      const querySnapshot = await getDocs(collection(db, "users"));
-
-      let users = [];
-
-querySnapshot.forEach((doc) => {
-  users.push(doc.data());
-});
-      showUser();
-
+let users = [];
 let index = 0;
 
+async function loadUsers() {
+  const querySnapshot = await getDocs(collection(db, "users"));
+
+  querySnapshot.forEach((doc) => {
+    users.push(doc.data());
+  });
+
+  showUser();
+}
+
 function showUser() {
-  if (!users.length) {
-    usersDiv.innerHTML = "<h2>جارٍ التحميل...</h2>";
+  if (users.length === 0) {
+    usersDiv.innerHTML = "<h2>مفيش مستخدمين 😅</h2>";
     return;
   }
 
@@ -134,25 +109,7 @@ function showUser() {
 
   usersDiv.innerHTML = `
     <div class="card">
-      <img src="${user.image}" width="150"><br><br>
-      <h3>${user.name}</h3>
-
-      <button onclick="like()">❤️</button>
-      <button onclick="skip()">❌</button>
-    </div>
-  `;
-} 
-{
-  if (index >= users.length) {
-    usersDiv.innerHTML = "<h2>خلصت الناس 😅</h2>";
-    return;
-  }
-
-  const user = users[index];
-
-  usersDiv.innerHTML = `
-    <div class="card">
-      <img src="${user.image}" width="150"><br><br>
+      <img src="${user.image}"><br><br>
       <h3>${user.name}</h3>
 
       <button onclick="like()">❤️</button>
@@ -185,25 +142,21 @@ window.skip = () => {
   }, 300);
 };
 
-
-      let startX = 0;
+/* 👇 الماوس */
+let startX = 0;
 
 document.addEventListener("mousedown", (e) => {
   startX = e.clientX;
 });
 
 document.addEventListener("mouseup", (e) => {
-  let endX = e.clientX;
-  let diff = endX - startX;
+  let diff = e.clientX - startX;
 
-  if (diff > 100) {
-    like();   // يمين
-  } else if (diff < -100) {
-    skip();   // شمال
-  }
+  if (diff > 100) like();
+  else if (diff < -100) skip();
 });
 
-/* 👇 السحب بالموبايل */
+/* 👇 الموبايل */
 let startTouch = 0;
 
 document.addEventListener("touchstart", (e) => {
@@ -211,29 +164,14 @@ document.addEventListener("touchstart", (e) => {
 });
 
 document.addEventListener("touchend", (e) => {
-  let endTouch = e.changedTouches[0].clientX;
-  let diff = endTouch - startTouch;
+  let diff = e.changedTouches[0].clientX - startTouch;
 
-  if (diff > 100) {
-    like();   // يمين
-  } else if (diff < -100) {
-    skip();   // شمال
-  }
-});
-    
-    loadUsers();
-    window.likeUser = async function(name) {
-
-  const currentUser = localStorage.getItem("userEmail");
-
-await addDoc(collection(db, "likes"), {
-  user: currentUser,
-  likedUser: name
+  if (diff > 100) like();
+  else if (diff < -100) skip();
 });
 
-  alert("عملت لايك ❤️");
-};
-  </script>
+loadUsers();
+</script>
 
 </body>
 </html>
