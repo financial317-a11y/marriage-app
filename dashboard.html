@@ -150,7 +150,8 @@ window.like = async () => {
   const snapshot = await getDocs(q);
 
   if (!snapshot.empty) {
-    alert("💖 تم التطابق!");
+   localStorage.setItem("chatUser", likedUser);
+   window.location.href = "chat.html";
   }
 
   // 🎬 الحركة
