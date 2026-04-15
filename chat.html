@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <title>الشات 💬</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #ffe6ea;
+      margin: 0;
+    }
+
+    .chat-box {
+      height: 80vh;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .message {
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 5px;
+      width: fit-content;
+      max-width: 70%;
+    }
+
+    .me {
+      background: #ff4d6d;
+      color: white;
+      margin-left: auto;
+    }
+
+    .input-box {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+    }
+
+    button {
+      padding: 10px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2 id="chatWith">💬</h2>
+
+<div class="chat-box" id="chatBox"></div>
+
+<div class="input-box">
+  <input id="msg" placeholder="اكتب رسالة...">
+  <button onclick="send()">إرسال</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+  authDomain: "marriage-app-3b2d2.firebaseapp.com",
+  projectId: "marriage-app-3b2d2",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const currentUser = localStorage.getItem("userEmail");
+const chatUser = localStorage.getItem("chatUser");
+
+document.getElementById("chatWith").innerText = "💬 مع " + chatUser;
+
+const chatBox = document.getElementById("chatBox");
+
+window.send = async () => {
+  const text = document.getElementById("msg").value;
+
+  await addDoc(collection(db, "messages"), {
+    from: currentUser,
+    to: chatUser,
+    text: text
+  });
+
+  document.getElementById("msg").value = "";
+  loadMessages();
+};
+
+async function loadMessages() {
+  const snapshot = await getDocs(collection(db, "messages"));
+
+  chatBox.innerHTML = "";
+
+  snapshot.forEach((doc) => {
+    const msg = doc.data();
+
+    if (
+      (msg.from === currentUser && msg.to === chatUser) ||
+      (msg.from === chatUser && msg.to === currentUser)
+    ) {
+      chatBox.innerHTML += `
+        <div class="message ${msg.from === currentUser ? 'me' : ''}">
+          ${msg.text}
+        </div>
+      `;
+    }
+  });
+}
+
+loadMessages();
+setInterval(loadMessages, 2000);
+</script>
+
+</body>
+</html>
