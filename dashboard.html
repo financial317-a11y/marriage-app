@@ -70,6 +70,9 @@
 .card img {
   border-radius: 50%;
 }
+  .card {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
 </style>
 </head>
 <body>
@@ -135,13 +138,27 @@ function showUser() {
 }
 
 window.like = () => {
-  index++;
-  showUser();
+  const card = document.querySelector(".card");
+
+  card.style.transform = "translateX(200px)";
+  card.style.opacity = "0";
+
+  setTimeout(() => {
+    index++;
+    showUser();
+  }, 300);
 };
 
 window.skip = () => {
-  index++;
-  showUser();
+  const card = document.querySelector(".card");
+
+  card.style.transform = "translateX(-200px)";
+  card.style.opacity = "0";
+
+  setTimeout(() => {
+    index++;
+    showUser();
+  }, 300);
 };
 
 showUser();
