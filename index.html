@@ -15,11 +15,12 @@
       color: white;
     }
 
-    .container {
+ .container {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 20px;
 }
 
     .box {
@@ -60,21 +61,23 @@
     }
 
     /* 📱 الموبايل */
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        justify-content: center;
-      }
+   @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
 
-      .image img {
-        width: 250px;
-        margin-bottom: 20px;
-      }
+  .image img {
+    width: 250px;
+    margin-bottom: 20px;
+  }
 
-      .box {
-        width: 90%;
-      }
-    }
+  .box {
+    width: 100%;
+    max-width: 350px;
+  }
+}
   </style>
 </head>
 
