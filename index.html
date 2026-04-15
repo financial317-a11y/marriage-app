@@ -79,6 +79,10 @@
       width: 90%;
       max-width: 350px;
     }
+    /* 👇 Animation */
+#loginBox, #registerBox {
+  transition: opacity 0.4s ease;
+}
   }
 </style>
 </head>
@@ -103,7 +107,7 @@
       </div>
 
       <!-- Register -->
-      <div id="registerBox" style="display:none;">
+      <div id="registerBox" style="display:none; opacity:0;">
         <h2>إنشاء حساب</h2>
 
         <input id="name" type="text" placeholder="اسمك"><br>
@@ -140,15 +144,30 @@
     const db = getFirestore(app);
 
     // تبديل بين Login و Register
-    window.showRegister = () => {
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("registerBox").style.display = "block";
-    };
+   window.showRegister = () => {
+  const login = document.getElementById("loginBox");
+  const register = document.getElementById("registerBox");
 
-    window.showLogin = () => {
-      document.getElementById("registerBox").style.display = "none";
-      document.getElementById("loginBox").style.display = "block";
-    };
+  login.style.opacity = "0";
+
+  setTimeout(() => {
+    login.style.display = "none";
+    register.style.display = "block";
+    register.style.opacity = "1";
+  }, 200);
+};
+   window.showLogin = () => {
+  const login = document.getElementById("loginBox");
+  const register = document.getElementById("registerBox");
+
+  register.style.opacity = "0";
+
+  setTimeout(() => {
+    register.style.display = "none";
+    login.style.display = "block";
+    login.style.opacity = "1";
+  }, 200);
+};
 
     // تسجيل دخول
     window.login = () => {
