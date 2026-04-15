@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <title>الرسائل 💬</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #ffe6ea;
+      text-align: center;
+    }
+
+    .user {
+      background: white;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .new {
+      border: 2px solid red;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>📩 الرسائل</h2>
+
+<div id="list"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+  authDomain: "marriage-app-3b2d2.firebaseapp.com",
+  projectId: "marriage-app-3b2d2",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const currentUser = localStorage.getItem("userEmail");
+const list = document.getElementById("list");
+
+async function loadChats() {
+  const snapshot = await getDocs(collection(db, "messages"));
+
+  let users = {};
+
+  snapshot.forEach((doc) => {
+    const msg = doc.data();
+
+    if (msg.to === currentUser) {
+      users[msg.from] = true;
+    }
+
+    if (msg.from === currentUser) {
+      users[msg.to] = true;
+    }
+  });
+
+  list.innerHTML = "";
+
+  Object.keys(users).forEach((user) => {
+    list.innerHTML += `
+      <div class="user" onclick="openChat('${user}')">
+        💬 ${user}
+      </div>
+    `;
+  });
+}
+
+window.openChat = (user) => {
+  localStorage.setItem("chatUser", user);
+  window.location.href = "chat.html";
+};
+
+loadChats();
+</script>
+
+</body>
+</html>
