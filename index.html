@@ -83,6 +83,17 @@
       width: 90%;
       max-width: 350px;
     }
+    #loginBox, #registerBox {
+  transition: all 0.4s ease;
+}
+
+.hide {
+  opacity: 0;
+}
+
+.show {
+  opacity: 1;
+}
   }
 </style>
 </head>
@@ -107,7 +118,7 @@
       </div>
 
       <!-- Register -->
-      <div id="registerBox" style="display:none; opacity:0;">
+     <div id="registerBox" style="display:none;" class="hide">
         <h2>إنشاء حساب</h2>
 
         <input id="name" type="text" placeholder="اسمك"><br>
@@ -148,6 +159,21 @@
   const login = document.getElementById("loginBox");
   const register = document.getElementById("registerBox");
 
+  login.classList.add("hide");
+
+  setTimeout(() => {
+    login.style.display = "none";
+    register.style.display = "block";
+
+    setTimeout(() => {
+      register.classList.remove("hide");
+      register.classList.add("show");
+    }, 50);
+  }, 300);
+};
+  const login = document.getElementById("loginBox");
+  const register = document.getElementById("registerBox");
+
   login.style.opacity = "0";
 
   setTimeout(() => {
@@ -161,6 +187,21 @@
 };
 
    window.showLogin = () => {
+  const login = document.getElementById("loginBox");
+  const register = document.getElementById("registerBox");
+
+  register.classList.add("hide");
+
+  setTimeout(() => {
+    register.style.display = "none";
+    login.style.display = "block";
+
+    setTimeout(() => {
+      login.classList.remove("hide");
+      login.classList.add("show");
+    }, 50);
+  }, 300);
+};
   const login = document.getElementById("loginBox");
   const register = document.getElementById("registerBox");
 
