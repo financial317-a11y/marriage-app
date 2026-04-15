@@ -8,15 +8,15 @@
       margin: 0;
       font-family: Arial;
       background: linear-gradient(135deg, #ff4d6d, #ff758c);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
+      min-height: 100vh;
       color: white;
     }
 
-    .left img {
-      width: 300px;
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      height: 100vh;
     }
 
     .box {
@@ -50,44 +50,51 @@
       color: #ff4d6d;
       cursor: pointer;
     }
+
+    .image img {
+      width: 400px;
+      border-radius: 20px;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- الصورة -->
-  <div class="left">
-  <img src="couple.png" width="350">
-</div>
-    <img src="https://cdn-icons-png.flaticon.com/512/166/166258.png">
-  </div>
+  <div class="container">
 
-  <!-- الفورم -->
-  <div class="box">
+    <!-- الفورم -->
+    <div class="box">
 
-    <!-- Login -->
-    <div id="loginBox">
-      <h2>تسجيل الدخول</h2>
+      <!-- Login -->
+      <div id="loginBox">
+        <h2>تسجيل الدخول</h2>
 
-      <input id="loginEmail" type="email" placeholder="الإيميل"><br>
-      <input id="loginPassword" type="password" placeholder="الباسورد"><br>
+        <input id="loginEmail" type="email" placeholder="الإيميل"><br>
+        <input id="loginPassword" type="password" placeholder="الباسورد"><br>
 
-      <button onclick="login()">دخول</button>
+        <button onclick="login()">دخول</button>
 
-      <p>ليس لديك حساب؟ <a onclick="showRegister()">سجل الآن</a></p>
+        <p>ليس لديك حساب؟ <a onclick="showRegister()">سجل الآن</a></p>
+      </div>
+
+      <!-- Register -->
+      <div id="registerBox" style="display:none;">
+        <h2>إنشاء حساب</h2>
+
+        <input id="name" type="text" placeholder="اسمك"><br>
+        <input id="email" type="email" placeholder="الإيميل"><br>
+        <input id="password" type="password" placeholder="الباسورد"><br>
+
+        <button onclick="register()">تسجيل</button>
+
+        <p>عندك حساب؟ <a onclick="showLogin()">دخول</a></p>
+      </div>
+
     </div>
 
-    <!-- Register -->
-    <div id="registerBox" style="display:none;">
-      <h2>إنشاء حساب</h2>
-
-      <input id="name" type="text" placeholder="اسمك"><br>
-      <input id="email" type="email" placeholder="الإيميل"><br>
-      <input id="password" type="password" placeholder="الباسورد"><br>
-
-      <button onclick="register()">تسجيل</button>
-
-      <p>عندك حساب؟ <a onclick="showLogin()">دخول</a></p>
+    <!-- الصورة -->
+    <div class="image">
+      <img src="couple.png">
     </div>
 
   </div>
@@ -107,7 +114,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // تبديل
+    // تبديل بين Login و Register
     window.showRegister = () => {
       document.getElementById("loginBox").style.display = "none";
       document.getElementById("registerBox").style.display = "block";
