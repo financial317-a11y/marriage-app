@@ -1,10 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
 <head>
-  <title>Marriage App</title>
+  <title>App</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #ff4d6d, #ff758c);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      color: white;
+    }
+
+    .left img {
+      width: 300px;
+    }
+
+    .box {
+      background: white;
+      color: black;
+      padding: 30px;
+      border-radius: 20px;
+      width: 320px;
+      text-align: center;
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 95%;
+      padding: 12px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    a {
+      color: #ff4d6d;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Welcome to Marriage App 💍</h1>
-  <p>This is my first website</p>
+
+  <!-- الصورة -->
+  <div class="left">
+    <img src="https://cdn-icons-png.flaticon.com/512/166/166258.png">
+  </div>
+
+  <!-- الفورم -->
+  <div class="box">
+
+    <!-- Login -->
+    <div id="loginBox">
+      <h2>تسجيل الدخول</h2>
+
+      <input id="loginEmail" type="email" placeholder="الإيميل"><br>
+      <input id="loginPassword" type="password" placeholder="الباسورد"><br>
+
+      <button onclick="login()">دخول</button>
+
+      <p>ليس لديك حساب؟ <a onclick="showRegister()">سجل الآن</a></p>
+    </div>
+
+    <!-- Register -->
+    <div id="registerBox" style="display:none;">
+      <h2>إنشاء حساب</h2>
+
+      <input id="name" type="text" placeholder="اسمك"><br>
+      <input id="email" type="email" placeholder="الإيميل"><br>
+      <input id="password" type="password" placeholder="الباسورد"><br>
+
+      <button onclick="register()">تسجيل</button>
+
+      <p>عندك حساب؟ <a onclick="showLogin()">دخول</a></p>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+      authDomain: "marriage-app-3b2d2.firebaseapp.com",
+      projectId: "marriage-app-3b2d2",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // تبديل
+    window.showRegister = () => {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("registerBox").style.display = "block";
+    };
+
+    window.showLogin = () => {
+      document.getElementById("registerBox").style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
+    };
+
+    // تسجيل دخول
+    window.login = () => {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          localStorage.setItem("userEmail", email);
+          window.location.href = "dashboard.html";
+        })
+        .catch(e => alert(e.message));
+    };
+
+    // تسجيل
+    window.register = () => {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async () => {
+          await addDoc(collection(db, "users"), {
+            name: name,
+            age: 20,
+            image: "https://randomuser.me/api/portraits/men/1.jpg"
+          });
+
+          alert("تم إنشاء الحساب");
+          showLogin();
+        })
+        .catch(e => alert(e.message));
+    };
+  </script>
+
 </body>
 </html>
