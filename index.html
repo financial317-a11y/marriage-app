@@ -2,100 +2,85 @@
 <html dir="rtl">
 <head>
   <title>App</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #ff4d6d, #ff758c);
+      min-height: 100vh;
+      color: white;
+    }
 
- <style>
-  body {
-    margin: 0;
-    font-family: Arial;
-    background: linear-gradient(135deg, #ff4d6d, #ff758c);
-    min-height: 100vh;
-    color: white;
-  }
-
-  .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    height: 100vh;
-  }
-
-  .box {
-    background: white;
-    color: black;
-    padding: 30px;
-    border-radius: 20px;
-    width: 320px;
-    text-align: center;
-  }
-
-  input {
-    width: 90%;
-    padding: 12px;
-    margin: 10px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-  }
-
-  button {
-    width: 95%;
-    padding: 12px;
-    background: #ff4d6d;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-  }
-
-  a {
-    color: #ff4d6d;
-    cursor: pointer;
-  }
-
-  .image img {
-    width: 400px;
-    border-radius: 20px;
-  }
-
-  /* 📱 الموبايل */
-  @media (max-width: 768px) {
     .container {
-      flex-direction: column;
-      justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      height: 100vh;
+    }
+
+    .box {
+      background: white;
+      color: black;
+      padding: 30px;
+      border-radius: 20px;
+      width: 320px;
       text-align: center;
     }
 
-    .image {
-      order: -1;
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 95%;
+      padding: 12px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    a {
+      color: #ff4d6d;
+      cursor: pointer;
     }
 
     .image img {
-      width: 250px;
-      margin-bottom: 20px;
+      width: 400px;
+      border-radius: 20px;
     }
 
-    .box {
-      width: 90%;
-      max-width: 350px;
-    }
-    .box {
-      width: 90%;
-      max-width: 350px;
-    }
-    #loginBox, #registerBox {
-  transition: all 0.4s ease;
-}
+    /* 📱 موبايل */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
 
-.hide {
-  opacity: 0;
-}
+      .image {
+        order: -1;
+      }
 
-.show {
-  opacity: 1;
-}
-  }
-</style>
+      .image img {
+        width: 250px;
+        margin-bottom: 20px;
+      }
+
+      .box {
+        width: 90%;
+        max-width: 350px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -118,7 +103,7 @@
       </div>
 
       <!-- Register -->
-     <div id="registerBox" style="display:none;" class="hide">
+      <div id="registerBox" style="display:none;">
         <h2>إنشاء حساب</h2>
 
         <input id="name" type="text" placeholder="اسمك"><br>
@@ -155,67 +140,15 @@
     const db = getFirestore(app);
 
     // تبديل بين Login و Register
-   window.showRegister = () => {
-  const login = document.getElementById("loginBox");
-  const register = document.getElementById("registerBox");
+    window.showRegister = () => {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("registerBox").style.display = "block";
+    };
 
-  login.classList.add("hide");
-
-  setTimeout(() => {
-    login.style.display = "none";
-    register.style.display = "block";
-
-    setTimeout(() => {
-      register.classList.remove("hide");
-      register.classList.add("show");
-    }, 50);
-  }, 300);
-};
-  const login = document.getElementById("loginBox");
-  const register = document.getElementById("registerBox");
-
-  login.style.opacity = "0";
-
-  setTimeout(() => {
-    login.style.display = "none";
-    register.style.display = "block";
-
-    setTimeout(() => {
-      register.style.opacity = "1";
-    }, 50);
-  }, 300);
-};
-
-   window.showLogin = () => {
-  const login = document.getElementById("loginBox");
-  const register = document.getElementById("registerBox");
-
-  register.classList.add("hide");
-
-  setTimeout(() => {
-    register.style.display = "none";
-    login.style.display = "block";
-
-    setTimeout(() => {
-      login.classList.remove("hide");
-      login.classList.add("show");
-    }, 50);
-  }, 300);
-};
-  const login = document.getElementById("loginBox");
-  const register = document.getElementById("registerBox");
-
-  register.style.opacity = "0";
-
-  setTimeout(() => {
-    register.style.display = "none";
-    login.style.display = "block";
-
-    setTimeout(() => {
-      login.style.opacity = "1";
-    }, 50);
-  }, 300);
-};
+    window.showLogin = () => {
+      document.getElementById("registerBox").style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
+    };
 
     // تسجيل دخول
     window.login = () => {
