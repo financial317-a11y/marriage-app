@@ -162,8 +162,41 @@ window.skip = () => {
 };
 
 showUser();
-    }
+      let startX = 0;
 
+document.addEventListener("mousedown", (e) => {
+  startX = e.clientX;
+});
+
+document.addEventListener("mouseup", (e) => {
+  let endX = e.clientX;
+  let diff = endX - startX;
+
+  if (diff > 100) {
+    like();   // يمين
+  } else if (diff < -100) {
+    skip();   // شمال
+  }
+});
+
+/* 👇 السحب بالموبايل */
+let startTouch = 0;
+
+document.addEventListener("touchstart", (e) => {
+  startTouch = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", (e) => {
+  let endTouch = e.changedTouches[0].clientX;
+  let diff = endTouch - startTouch;
+
+  if (diff > 100) {
+    like();   // يمين
+  } else if (diff < -100) {
+    skip();   // شمال
+  }
+});
+    
     loadUsers();
     window.likeUser = async function(name) {
 
