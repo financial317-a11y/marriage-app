@@ -115,10 +115,34 @@
 querySnapshot.forEach((doc) => {
   users.push(doc.data());
 });
+      showUser();
 
 let index = 0;
 
 function showUser() {
+  if (!users.length) {
+    usersDiv.innerHTML = "<h2>جارٍ التحميل...</h2>";
+    return;
+  }
+
+  if (index >= users.length) {
+    usersDiv.innerHTML = "<h2>خلصت الناس 😅</h2>";
+    return;
+  }
+
+  const user = users[index];
+
+  usersDiv.innerHTML = `
+    <div class="card">
+      <img src="${user.image}" width="150"><br><br>
+      <h3>${user.name}</h3>
+
+      <button onclick="like()">❤️</button>
+      <button onclick="skip()">❌</button>
+    </div>
+  `;
+} 
+{
   if (index >= users.length) {
     usersDiv.innerHTML = "<h2>خلصت الناس 😅</h2>";
     return;
@@ -161,7 +185,7 @@ window.skip = () => {
   }, 300);
 };
 
-showUser();
+
       let startX = 0;
 
 document.addEventListener("mousedown", (e) => {
