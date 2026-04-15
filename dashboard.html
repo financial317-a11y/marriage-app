@@ -61,7 +61,7 @@
 <body>
 
 <h1>مرحبا بك 👋</h1>
- <a href="messages.html">📩 الرسائل</a><br><br> 
+ <a href="messages.html">📩 الرسائل (<span id="msgCount">0</span>)</a>
 <a href="profile.html">بروفايلي 👤</a><br><br>
 
 <h2>المستخدمين:</h2>
@@ -209,6 +209,25 @@ document.addEventListener("touchend", (e) => {
 
 loadUsers();
 </script>
+ async function countMessages() {
+  const snapshot = await getDocs(collection(db, "messages"));
+
+  const currentUser = localStorage.getItem("userEmail");
+  let count = 0;
+
+  snapshot.forEach((doc) => {
+    const msg = doc.data();
+
+    if (msg.to === currentUser) {
+      count++;
+    }
+  });
+
+  document.getElementById("msgCount").innerText = count;
+}
+
+countMessages();
+setInterval(countMessages, 3000); 
 
 </body>
 </html>
