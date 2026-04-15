@@ -57,6 +57,18 @@
   button:hover {
     background: #e63950;
   }
+  .card {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  width: 250px;
+  margin: auto;
+  text-align: center;
+}
+
+.card img {
+  border-radius: 50%;
+}
 </style>
 </head>
 <body>
@@ -94,18 +106,44 @@
     async function loadUsers() {
       const querySnapshot = await getDocs(collection(db, "users"));
 
-      querySnapshot.forEach((doc) => {
-        const user = doc.data();
+      let users = [];
 
-        usersDiv.innerHTML += `
-         <div class="card">
-            <img src="${user.image}" width="80"><br>
-            <p>👤 ${user.name}</p>
-           <button onclick="likeUser('${user.name}')">اهتمام ❤️</button>
-          </div>
-          <br>
-        `;
-      });
+querySnapshot.forEach((doc) => {
+  users.push(doc.data());
+});
+
+let index = 0;
+
+function showUser() {
+  if (index >= users.length) {
+    usersDiv.innerHTML = "<h2>خلصت الناس 😅</h2>";
+    return;
+  }
+
+  const user = users[index];
+
+  usersDiv.innerHTML = `
+    <div class="card">
+      <img src="${user.image}" width="150"><br><br>
+      <h3>${user.name}</h3>
+
+      <button onclick="like()">❤️</button>
+      <button onclick="skip()">❌</button>
+    </div>
+  `;
+}
+
+window.like = () => {
+  index++;
+  showUser();
+};
+
+window.skip = () => {
+  index++;
+  showUser();
+};
+
+showUser();
     }
 
     loadUsers();
