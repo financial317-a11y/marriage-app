@@ -68,7 +68,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -121,7 +121,39 @@ function showUser() {
   `;
 }
 
-window.like = () => {
+window.like = async () => {
+
+  const done = localStorage.getItem("profileDone");
+
+  if (!done) {
+    alert("كمّل بروفايلك الأول 👤");
+    window.location.href = "profile.html";
+    return;
+  }
+
+  const currentUser = localStorage.getItem("userEmail");
+  const likedUser = users[index].name;
+
+  // 💾 سجل اللايك
+  await addDoc(collection(db, "likes"), {
+    from: currentUser,
+    to: likedUser
+  });
+
+  // 🔍 نشوف هل في لايك عكسي؟
+  const q = query(
+    collection(db, "likes"),
+    where("from", "==", likedUser),
+    where("to", "==", currentUser)
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (!snapshot.empty) {
+    alert("💖 تم التطابق!");
+  }
+
+  // 🎬 الحركة
   const card = document.querySelector(".card");
 
   card.style.transform = "translateX(200px)";
