@@ -1,93 +1,164 @@
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
 <head>
-  <title>Profile</title>
-
-  <head>
-  <title>Login</title>
+  <title>بروفايلي</title>
 
   <style>
     body {
-      margin: 0;
       font-family: Arial;
       background: #ffe6ea;
-      min-height: 100vh;
       text-align: center;
     }
 
-    body::before {
-      content: "❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      font-size: 30px;
-      opacity: 0.1;
-      z-index: -1;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      align-content: space-around;
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      width: 320px;
+      margin: 30px auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 
-    input {
+    select, input {
+      width: 90%;
       padding: 10px;
-      margin: 10px;
+      margin: 8px;
       border-radius: 10px;
       border: 1px solid #ccc;
-      width: 200px;
     }
 
     button {
+      width: 95%;
+      padding: 12px;
       background: #ff4d6d;
       color: white;
       border: none;
-      padding: 10px 15px;
-      border-radius: 20px;
-      cursor: pointer;
+      border-radius: 15px;
+      font-size: 16px;
     }
   </style>
+</head>
 
-</head>
-</head>
 <body>
 
-  <h1>👤 بروفايلي</h1>
+<div class="box">
+  <h2>كمل بروفايلك 👤</h2>
 
-  <img id="profileImage"><br><br>
-  <h2 id="profileName"></h2>
+  <!-- النوع -->
+  <select id="gender">
+    <option value="">اختر النوع</option>
+    <option>👦 رجل</option>
+    <option>👧 امرأة</option>
+  </select>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <!-- الاسم -->
+  <input id="name" placeholder="اسمك">
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
-      authDomain: "marriage-app-3b2d2.firebaseapp.com",
-      projectId: "marriage-app-3b2d2",
-    };
+  <!-- العمر -->
+  <select id="age"></select>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  <!-- الدولة -->
+  <select id="country">
+    <option>مصر</option>
+    <option>السعودية</option>
+    <option>الإمارات</option>
+    <option>المغرب</option>
+  </select>
 
-    const currentUser = localStorage.getItem("userEmail");
+  <!-- المهنة -->
+  <input id="job" placeholder="المهنة">
 
-    async function loadProfile() {
-      const querySnapshot = await getDocs(collection(db, "users"));
+  <!-- الحالة -->
+  <select id="status">
+    <option>أعزب</option>
+    <option>متزوج</option>
+    <option>مطلق</option>
+  </select>
 
-      querySnapshot.forEach((doc) => {
-        const user = doc.data();
+  <!-- الديانة -->
+  <select id="religion">
+    <option>مسلم</option>
+    <option>مسيحي</option>
+  </select>
 
-        if (user.name === currentUser || user.name === currentUser) {
-          document.getElementById("profileName").innerText = user.name;
-          document.getElementById("profileImage").src = user.image;
-        }
-      });
-    }
+  <!-- التعليم -->
+  <select id="education">
+    <option>ثانوي</option>
+    <option>جامعي</option>
+    <option>ماجستير</option>
+  </select>
 
-    loadProfile();
-  </script>
+  <!-- الأبناء -->
+  <select id="children">
+    <option>0</option>
+    <option>1</option>
+    <option>2</option>
+    <option>3+</option>
+  </select>
+
+  <!-- الطول -->
+  <select id="height"></select>
+
+  <!-- الوزن -->
+  <select id="weight"></select>
+
+  <!-- صورة -->
+  <input id="image" placeholder="رابط صورتك">
+
+  <button onclick="saveProfile()">حفظ</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+  authDomain: "marriage-app-3b2d2.firebaseapp.com",
+  projectId: "marriage-app-3b2d2",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 توليد الأعمار
+for (let i = 18; i <= 60; i++) {
+  document.getElementById("age").innerHTML += `<option>${i}</option>`;
+}
+
+// 🔥 الطول
+for (let i = 140; i <= 200; i++) {
+  document.getElementById("height").innerHTML += `<option>${i} سم</option>`;
+}
+
+// 🔥 الوزن
+for (let i = 40; i <= 120; i++) {
+  document.getElementById("weight").innerHTML += `<option>${i} كجم</option>`;
+}
+
+window.saveProfile = async () => {
+  const profile = {
+    gender: document.getElementById("gender").value,
+    name: document.getElementById("name").value,
+    age: document.getElementById("age").value,
+    country: document.getElementById("country").value,
+    job: document.getElementById("job").value,
+    status: document.getElementById("status").value,
+    religion: document.getElementById("religion").value,
+    education: document.getElementById("education").value,
+    children: document.getElementById("children").value,
+    height: document.getElementById("height").value,
+    weight: document.getElementById("weight").value,
+    image: document.getElementById("image").value
+  };
+
+  await addDoc(collection(db, "users"), profile);
+
+  localStorage.setItem("profileDone", "yes");
+
+  alert("تم حفظ البروفايل ✅");
+};
+</script>
 
 </body>
 </html>
