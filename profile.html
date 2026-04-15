@@ -19,10 +19,18 @@
       box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 
+    label {
+      display: block;
+      text-align: right;
+      margin-right: 15px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
     select, input {
       width: 90%;
       padding: 10px;
-      margin: 8px;
+      margin: 5px;
       border-radius: 10px;
       border: 1px solid #ccc;
     }
@@ -35,6 +43,7 @@
       border: none;
       border-radius: 15px;
       font-size: 16px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -44,20 +53,20 @@
 <div class="box">
   <h2>كمل بروفايلك 👤</h2>
 
-  <!-- النوع -->
+  <label>النوع</label>
   <select id="gender">
     <option value="">اختر النوع</option>
     <option>👦 رجل</option>
     <option>👧 امرأة</option>
   </select>
 
-  <!-- الاسم -->
+  <label>الاسم</label>
   <input id="name" placeholder="اسمك">
 
-  <!-- العمر -->
+  <label>العمر</label>
   <select id="age"></select>
 
-  <!-- الدولة -->
+  <label>الدولة</label>
   <select id="country">
     <option>مصر</option>
     <option>السعودية</option>
@@ -65,30 +74,30 @@
     <option>المغرب</option>
   </select>
 
-  <!-- المهنة -->
+  <label>المهنة</label>
   <input id="job" placeholder="المهنة">
 
-  <!-- الحالة -->
+  <label>الحالة الاجتماعية</label>
   <select id="status">
     <option>أعزب</option>
     <option>متزوج</option>
     <option>مطلق</option>
   </select>
 
-  <!-- الديانة -->
+  <label>الديانة</label>
   <select id="religion">
     <option>مسلم</option>
     <option>مسيحي</option>
   </select>
 
-  <!-- التعليم -->
+  <label>التحصيل التعليمي</label>
   <select id="education">
     <option>ثانوي</option>
     <option>جامعي</option>
     <option>ماجستير</option>
   </select>
 
-  <!-- الأبناء -->
+  <label>عدد الأبناء</label>
   <select id="children">
     <option>0</option>
     <option>1</option>
@@ -96,16 +105,16 @@
     <option>3+</option>
   </select>
 
-  <!-- الطول -->
+  <label>الطول</label>
   <select id="height"></select>
 
-  <!-- الوزن -->
+  <label>الوزن</label>
   <select id="weight"></select>
 
-  <!-- صورة -->
+  <label>الصورة</label>
   <input id="image" placeholder="رابط صورتك">
 
-  <button onclick="saveProfile()">حفظ</button>
+  <button onclick="saveProfile()">حفظ البروفايل</button>
 </div>
 
 <script type="module">
@@ -121,17 +130,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔥 توليد الأعمار
+// الأعمار
 for (let i = 18; i <= 60; i++) {
   document.getElementById("age").innerHTML += `<option>${i}</option>`;
 }
 
-// 🔥 الطول
+// الطول
 for (let i = 140; i <= 200; i++) {
   document.getElementById("height").innerHTML += `<option>${i} سم</option>`;
 }
 
-// 🔥 الوزن
+// الوزن
 for (let i = 40; i <= 120; i++) {
   document.getElementById("weight").innerHTML += `<option>${i} كجم</option>`;
 }
