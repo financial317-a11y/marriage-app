@@ -3,6 +3,9 @@
 <head>
   <title>الشات 💬</title>
 
+  <!-- 🔥 مكتبة الإيموجي -->
+  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js"></script>
+
   <style>
     body {
       font-family: Arial;
@@ -48,7 +51,7 @@
     }
 
     button {
-      padding: 12px;
+      padding: 10px;
       border: none;
       cursor: pointer;
     }
@@ -59,25 +62,7 @@
     }
 
     .emoji-btn {
-      background: #eee;
       font-size: 20px;
-    }
-
-    .emoji-panel {
-      position: fixed;
-      bottom: 60px;
-      width: 100%;
-      background: white;
-      max-height: 200px;
-      overflow-y: auto;
-      display: none;
-      padding: 10px;
-    }
-
-    .emoji-panel span {
-      font-size: 22px;
-      margin: 5px;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -88,11 +73,16 @@
 
 <div class="chat-box" id="chatBox"></div>
 
-<!-- 😈 لوحة الإيموجي -->
-<div class="emoji-panel" id="emojiPanel"></div>
-
 <div class="input-box">
-  <button class="emoji-btn" onclick="toggleEmoji()">😊</button>
+  <button id="emojiBtn" class="emoji-btn">😊</button>
+
+  <!-- 📷 رفع صورة -->
+  <input type="file" id="fileInput" style="display:none" accept="image/*">
+  <button onclick="document.getElementById('fileInput').click()">📷</button>
+
+  <!-- 🎤 تسجيل صوت -->
+  <button onclick="startRecording()">🎤</button>
+
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
   <button class="send-btn" onclick="send()">➤</button>
 </div>
@@ -117,6 +107,18 @@ document.getElementById("chatWith").innerText = "💬 مع " + chatUser;
 
 const chatBox = document.getElementById("chatBox");
 
+/* 😈 Emoji picker */
+const picker = new EmojiButton();
+const button = document.getElementById('emojiBtn');
+
+button.addEventListener('click', () => {
+  picker.togglePicker(button);
+});
+
+picker.on('emoji', emoji => {
+  document.getElementById("msg").value += emoji;
+});
+
 /* 🔥 إرسال */
 window.send = async () => {
   const text = document.getElementById("msg").value;
@@ -125,7 +127,8 @@ window.send = async () => {
   await addDoc(collection(db, "messages"), {
     from: currentUser,
     to: chatUser,
-    text: text
+    text: text,
+    type: "text"
   });
 
   document.getElementById("msg").value = "";
@@ -137,30 +140,59 @@ window.handleKey = (e) => {
   if (e.key === "Enter") send();
 };
 
-/* 😈 إظهار الإيموجي */
-window.toggleEmoji = () => {
-  const panel = document.getElementById("emojiPanel");
-  panel.style.display = panel.style.display === "block" ? "none" : "block";
-};
+/* 📷 رفع صورة */
+document.getElementById("fileInput").addEventListener("change", async function() {
+  const file = this.files[0];
 
-/* 😈 إضافة إيموجي */
-window.addEmoji = (emoji) => {
-  const input = document.getElementById("msg");
-  input.value += emoji;
-};
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    await addDoc(collection(db, "messages"), {
+      from: currentUser,
+      to: chatUser,
+      image: e.target.result,
+      type: "image"
+    });
 
-/* 😈 توليد إيموجي كتير */
-const emojis = [
-"😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😍","😘","😜","🤩",
-"😎","😢","😭","😡","😱","😴","🤔","🙄","😇","🥰","😋","😏",
-"❤️","💔","💖","💙","💚","💛","🔥","✨","🌹","🎉","👍","👎","👏",
-"🙏","👌","💪","👀","🎶","🍕","🍔","🍟","☕","🍓","🍎","🍉"
-];
+    loadMessages();
+  };
 
-const panel = document.getElementById("emojiPanel");
-emojis.forEach(e => {
-  panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
+  reader.readAsDataURL(file);
 });
+
+/* 🎤 تسجيل صوت */
+let mediaRecorder;
+window.startRecording = async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+  mediaRecorder = new MediaRecorder(stream);
+  let chunks = [];
+
+  mediaRecorder.ondataavailable = e => chunks.push(e.data);
+
+  mediaRecorder.onstop = async () => {
+    const blob = new Blob(chunks);
+    const reader = new FileReader();
+
+    reader.onloadend = async () => {
+      await addDoc(collection(db, "messages"), {
+        from: currentUser,
+        to: chatUser,
+        audio: reader.result,
+        type: "audio"
+      });
+
+      loadMessages();
+    };
+
+    reader.readAsDataURL(blob);
+  };
+
+  mediaRecorder.start();
+
+  setTimeout(() => {
+    mediaRecorder.stop();
+  }, 3000); // تسجيل 3 ثواني
+};
 
 /* 📩 تحميل الرسائل */
 async function loadMessages() {
@@ -175,11 +207,30 @@ async function loadMessages() {
       (msg.from === currentUser && msg.to === chatUser) ||
       (msg.from === chatUser && msg.to === currentUser)
     ) {
-      chatBox.innerHTML += `
-        <div class="message ${msg.from === currentUser ? 'me' : ''}">
-          ${msg.text}
-        </div>
-      `;
+
+      if (msg.type === "text") {
+        chatBox.innerHTML += `
+          <div class="message ${msg.from === currentUser ? 'me' : ''}">
+            ${msg.text}
+          </div>
+        `;
+      }
+
+      if (msg.type === "image") {
+        chatBox.innerHTML += `
+          <div class="message">
+            <img src="${msg.image}" width="150">
+          </div>
+        `;
+      }
+
+      if (msg.type === "audio") {
+        chatBox.innerHTML += `
+          <div class="message">
+            <audio controls src="${msg.audio}"></audio>
+          </div>
+        `;
+      }
     }
   });
 
