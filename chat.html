@@ -11,7 +11,7 @@
     }
 
     .chat-box {
-      height: 65vh;
+      height: 70vh;
       overflow-y: auto;
       padding: 10px;
       display: flex;
@@ -19,12 +19,11 @@
     }
 
     .message {
-      padding: 10px 15px;
-      border-radius: 20px;
+      padding: 10px;
+      border-radius: 15px;
       margin: 5px;
       max-width: 70%;
       background: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .me {
@@ -82,12 +81,10 @@
 <body>
 
 <h2 id="chatWith"></h2>
-<div id="status"></div>
-<div id="typing" style="color:gray;"></div>
 
 <div class="chat-box" id="chatBox"></div>
 
-<!-- 🎤 تسجيل -->
+<!-- 🎤 صندوق التسجيل -->
 <div id="recordBox" style="
   display:none;
   position:fixed;
@@ -101,10 +98,14 @@
 <div id="wave">▂▃▅▇▅▃▂</div>
 </div>
 
+
+<!-- 😈 الإيموجي -->
 <div class="emoji-panel" id="emojiPanel"></div>
 
 <div class="input-box">
+
   <button onclick="toggleEmoji()">😊</button>
+
   <button onclick="document.getElementById('fileInput').click()">📷</button>
 
   <button 
@@ -116,21 +117,14 @@
 
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
   <button class="send-btn" onclick="send()">➤</button>
+
 </div>
 
 <input type="file" id="fileInput" style="display:none">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot,
-  doc,
-  setDoc,
-  updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -148,52 +142,6 @@ document.getElementById("chatWith").innerText = "💬 مع " + chatUser;
 
 const chatBox = document.getElementById("chatBox");
 
-/* 🟢 Online */
-setDoc(doc(db, "status", currentUser), {
-  online: true
-});
-
-onSnapshot(doc(db, "status", chatUser), (docSnap) => {
-  const data = docSnap.data();
-  document.getElementById("status").innerText =
-    data?.online ? "🟢 متصل" : "⚫ غير متصل";
-});
-
-/* ✍️ Typing */
-let typingTimeout;
-
-
-let typingTimeout;
-
-document.getElementById("msg").addEventListener("input", async () => {
-  // 👇 يخليه يكتب
-  await setDoc(doc(db, "typing", currentUser), {
-    typing: true,
-    to: chatUser
-  });
-
-  clearTimeout(typingTimeout);
-
-  typingTimeout = setTimeout(async () => {
-    // 👇 يوقف بعد 2 ثانية
-    await setDoc(doc(db, "typing", currentUser), {
-      typing: false,
-      to: chatUser
-    });
-  }, 2000);
-});
-
-onSnapshot(doc(db, "typing", chatUser), (docSnap) => {
-  const data = docSnap.data();
-
-  document.getElementById("typing").innerText =
-    data?.typing ? "✍️ يكتب الآن..." : "";
-});
-
-  document.getElementById("typing").innerText =
-    found ? "✍️ يكتب الآن..." : "";
-});
-
 /* إرسال */
 window.send = async () => {
   const text = document.getElementById("msg").value;
@@ -203,8 +151,7 @@ window.send = async () => {
     from: currentUser,
     to: chatUser,
     text: text,
-    time: Date.now(),
-    seen: false
+    time: Date.now()
   });
 
   document.getElementById("msg").value = "";
@@ -226,8 +173,8 @@ window.addEmoji = (emoji) => {
 };
 
 const emojis = ["😀","😂","😍","🔥","❤️","👍","😭","😎","😡","🥰","😜","🤩"];
-const panel = document.getElementById("emojiPanel");
 
+const panel = document.getElementById("emojiPanel");
 emojis.forEach(e => {
   panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
 });
@@ -249,11 +196,11 @@ document.getElementById("fileInput").addEventListener("change", function() {
   reader.readAsDataURL(file);
 });
 
-/* 🎤 صوت */
 let recorder;
 let chunks = [];
 let stream;
 
+/* 🎤 بدء التسجيل */
 window.startRecording = async () => {
   document.getElementById("recordBox").style.display = "block";
 
@@ -262,14 +209,24 @@ window.startRecording = async () => {
   recorder = new MediaRecorder(stream);
   chunks = [];
 
-  recorder.ondataavailable = e => {
-    if (e.data.size > 0) chunks.push(e.data);
+  recorder.ondataavailable = (e) => {
+    if (e.data.size > 0) {
+      chunks.push(e.data);
+    }
   };
 
   recorder.start();
 };
 
+/* 🛑 إيقاف التسجيل */
 window.stopRecording = () => {
+  setInterval(() => {
+  const wave = document.getElementById("wave");
+  if (wave && document.getElementById("recordBox").style.display === "block") {
+    const shapes = ["▂▃▅▇▅▃▂", "▃▅▇▅▃▂▃", "▅▇▅▃▂▃▅"];
+    wave.innerText = shapes[Math.floor(Math.random() * shapes.length)];
+  }
+}, 200);
   document.getElementById("recordBox").style.display = "none";
 
   if (!recorder) return;
@@ -291,20 +248,12 @@ window.stopRecording = () => {
 
     reader.readAsDataURL(blob);
 
+    // 🔥 اقفل المايك
     stream.getTracks().forEach(track => track.stop());
   };
 
   recorder.stop();
 };
-
-/* 🎵 ذبذبات */
-setInterval(() => {
-  const wave = document.getElementById("wave");
-  if (wave && document.getElementById("recordBox").style.display === "block") {
-    const shapes = ["▂▃▅▇▅▃▂", "▃▅▇▅▃▂▃", "▅▇▅▃▂▃▅"];
-    wave.innerText = shapes[Math.floor(Math.random() * shapes.length)];
-  }
-}, 200);
 
 /* عرض الرسائل */
 onSnapshot(collection(db, "messages"), (snapshot) => {
@@ -318,11 +267,6 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
       (msg.from === chatUser && msg.to === currentUser)
     ) {
       if (msg.time) messages.push(msg);
-
-      // ✔ Seen
-      if (msg.to === currentUser && !msg.seen) {
-        updateDoc(doc.ref, { seen: true });
-      }
     }
   });
 
@@ -336,7 +280,6 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
         ${msg.text || ""}
         ${msg.image ? `<br><img src="${msg.image}" width="120">` : ""}
         ${msg.audio ? `<br><audio controls src="${msg.audio}"></audio>` : ""}
-        ${msg.from === currentUser ? `<div style="font-size:12px">${msg.seen ? "✔✔" : "✔"}</div>` : ""}
       </div>
     `;
   });
