@@ -38,6 +38,7 @@
       bottom: 0;
       width: 100%;
       background: white;
+      align-items: center;
     }
 
     input {
@@ -77,13 +78,22 @@
 
 <div class="chat-box" id="chatBox"></div>
 
+<!-- 😈 الإيموجي -->
 <div class="emoji-panel" id="emojiPanel"></div>
 
 <div class="input-box">
+
+  <!-- الأدوات -->
   <button onclick="toggleEmoji()">😊</button>
+  <button onclick="document.getElementById('fileInput').click()">📷</button>
+  <button onclick="startRecording()">🎤</button>
+
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
   <button onclick="send()">➤</button>
+
 </div>
+
+<input type="file" id="fileInput" style="display:none" accept="image/*">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -91,8 +101,7 @@ import {
   getFirestore,
   collection,
   addDoc,
-  onSnapshot,
-  serverTimestamp
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -120,7 +129,8 @@ window.send = async () => {
     from: currentUser,
     to: chatUser,
     text: text,
-    time: Date.now()  // 🔥 ثابت
+    time: Date.now(),
+    type: "text"
   });
 
   document.getElementById("msg").value = "";
@@ -131,7 +141,7 @@ window.handleKey = (e) => {
   if (e.key === "Enter") send();
 };
 
-/* 😈 Emoji */
+/* 😈 الإيموجي */
 window.toggleEmoji = () => {
   const panel = document.getElementById("emojiPanel");
   panel.style.display = panel.style.display === "block" ? "none" : "block";
@@ -141,12 +151,10 @@ window.addEmoji = (e) => {
   document.getElementById("msg").value += e;
 };
 
-/* 😈 إيموجي كتير */
 const emojis = [
 "😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😍","😘","😜","🤩",
 "😎","😢","😭","😡","😱","😴","🤔","🙄","😇","🥰","😋","😏",
-"❤️","💔","💖","💙","💚","💛","🔥","✨","🌹","🎉","👍","👎","👏",
-"🙏","👌","💪","👀","🎶","🍕","🍔","🍟","☕","🍓","🍎","🍉"
+"❤️","💔","💖","💙","💚","💛","🔥","✨","🌹","🎉","👍","👎","👏"
 ];
 
 const panel = document.getElementById("emojiPanel");
@@ -154,7 +162,56 @@ emojis.forEach(e => {
   panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
 });
 
-/* ⚡ Realtime */
+/* 📷 صورة */
+document.getElementById("fileInput").addEventListener("change", function() {
+  const file = this.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async function(e) {
+    await addDoc(collection(db, "messages"), {
+      from: currentUser,
+      to: chatUser,
+      image: e.target.result,
+      time: Date.now(),
+      type: "image"
+    });
+  };
+
+  reader.readAsDataURL(file);
+});
+
+/* 🎤 صوت */
+let recorder;
+window.startRecording = async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  recorder = new MediaRecorder(stream);
+
+  let chunks = [];
+
+  recorder.ondataavailable = e => chunks.push(e.data);
+
+  recorder.onstop = async () => {
+    const blob = new Blob(chunks);
+    const reader = new FileReader();
+
+    reader.onloadend = async () => {
+      await addDoc(collection(db, "messages"), {
+        from: currentUser,
+        to: chatUser,
+        audio: reader.result,
+        time: Date.now(),
+        type: "audio"
+      });
+    };
+
+    reader.readAsDataURL(blob);
+  };
+
+  recorder.start();
+  setTimeout(() => recorder.stop(), 3000);
+};
+
+/* ⚡ Realtime + ترتيب */
 onSnapshot(collection(db, "messages"), (snapshot) => {
   let messages = [];
 
@@ -169,7 +226,6 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
     }
   });
 
-  // 🔥 ترتيب يدوي
   messages.sort((a, b) => a.time - b.time);
 
   chatBox.innerHTML = "";
@@ -177,7 +233,9 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
   messages.forEach(msg => {
     chatBox.innerHTML += `
       <div class="message ${msg.from === currentUser ? 'me' : ''}">
-        ${msg.text}
+        ${msg.text || ""}
+        ${msg.image ? `<br><img src="${msg.image}" width="120">` : ""}
+        ${msg.audio ? `<br><audio controls src="${msg.audio}"></audio>` : ""}
       </div>
     `;
   });
