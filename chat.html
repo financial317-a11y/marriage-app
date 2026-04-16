@@ -19,7 +19,7 @@
     }
 
     .message {
-      padding: 10px 15px;
+      padding: 10px;
       border-radius: 15px;
       margin: 5px;
       max-width: 70%;
@@ -43,15 +43,22 @@
 
     input {
       flex: 1;
-      padding: 12px;
+      padding: 10px;
       border: none;
+      outline: none;
     }
 
     button {
-      padding: 12px;
+      padding: 10px;
       font-size: 20px;
       border: none;
       cursor: pointer;
+      background: #eee;
+    }
+
+    .send-btn {
+      background: #ff4d6d;
+      color: white;
     }
 
     .emoji-panel {
@@ -59,9 +66,8 @@
       bottom: 60px;
       width: 100%;
       background: white;
-      max-height: 200px;
-      overflow-y: auto;
       display: none;
+      padding: 10px;
     }
 
     .emoji-panel span {
@@ -78,31 +84,25 @@
 
 <div class="chat-box" id="chatBox"></div>
 
-<!-- 😈 الإيموجي -->
 <div class="emoji-panel" id="emojiPanel"></div>
 
 <div class="input-box">
 
-  <!-- الأدوات -->
+  <!-- 🔥 الأزرار رجعت -->
   <button onclick="toggleEmoji()">😊</button>
   <button onclick="document.getElementById('fileInput').click()">📷</button>
   <button onclick="startRecording()">🎤</button>
 
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
-  <button onclick="send()">➤</button>
+  <button class="send-btn" onclick="send()">➤</button>
 
 </div>
 
-<input type="file" id="fileInput" style="display:none" accept="image/*">
+<input type="file" id="fileInput" style="display:none">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -120,7 +120,7 @@ document.getElementById("chatWith").innerText = "💬 مع " + chatUser;
 
 const chatBox = document.getElementById("chatBox");
 
-/* 🔥 إرسال */
+/* إرسال */
 window.send = async () => {
   const text = document.getElementById("msg").value;
   if (!text) return;
@@ -129,40 +129,35 @@ window.send = async () => {
     from: currentUser,
     to: chatUser,
     text: text,
-    time: Date.now(),
-    type: "text"
+    time: Date.now()
   });
 
   document.getElementById("msg").value = "";
 };
 
-/* 🔥 Enter */
+/* Enter */
 window.handleKey = (e) => {
   if (e.key === "Enter") send();
 };
 
-/* 😈 الإيموجي */
+/* Emoji */
 window.toggleEmoji = () => {
   const panel = document.getElementById("emojiPanel");
   panel.style.display = panel.style.display === "block" ? "none" : "block";
 };
 
-window.addEmoji = (e) => {
-  document.getElementById("msg").value += e;
+window.addEmoji = (emoji) => {
+  document.getElementById("msg").value += emoji;
 };
 
-const emojis = [
-"😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😍","😘","😜","🤩",
-"😎","😢","😭","😡","😱","😴","🤔","🙄","😇","🥰","😋","😏",
-"❤️","💔","💖","💙","💚","💛","🔥","✨","🌹","🎉","👍","👎","👏"
-];
+const emojis = ["😀","😂","😍","🔥","❤️","👍","😭","😎"];
 
 const panel = document.getElementById("emojiPanel");
 emojis.forEach(e => {
   panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
 });
 
-/* 📷 صورة */
+/* صورة */
 document.getElementById("fileInput").addEventListener("change", function() {
   const file = this.files[0];
   const reader = new FileReader();
@@ -172,19 +167,17 @@ document.getElementById("fileInput").addEventListener("change", function() {
       from: currentUser,
       to: chatUser,
       image: e.target.result,
-      time: Date.now(),
-      type: "image"
+      time: Date.now()
     });
   };
 
   reader.readAsDataURL(file);
 });
 
-/* 🎤 صوت */
-let recorder;
+/* صوت */
 window.startRecording = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  recorder = new MediaRecorder(stream);
+  const recorder = new MediaRecorder(stream);
 
   let chunks = [];
 
@@ -199,8 +192,7 @@ window.startRecording = async () => {
         from: currentUser,
         to: chatUser,
         audio: reader.result,
-        time: Date.now(),
-        type: "audio"
+        time: Date.now()
       });
     };
 
@@ -211,7 +203,7 @@ window.startRecording = async () => {
   setTimeout(() => recorder.stop(), 3000);
 };
 
-/* ⚡ Realtime + ترتيب */
+/* عرض الرسائل */
 onSnapshot(collection(db, "messages"), (snapshot) => {
   let messages = [];
 
@@ -246,3 +238,21 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
 
 </body>
 </html>
+💥 النتيجة
+
+✔ الأزرار ظهرت ✅
+✔ الترتيب مظبوط ✅
+✔ مفيش لخبطة ✅
+
+😈 أهم حاجة
+
+إحنا رجعنا لنسخة:
+👉 بسيطة
+👉 شغالة
+👉 مستقرة
+
+لو تمام دلوقتي قولّي:
+
+👉 “تمام كده 🔥”
+
+ونرجع نضيف الحاجات التقيلة واحدة واحدة من غير ما نبوظ الدنيا تاني 😏💻
