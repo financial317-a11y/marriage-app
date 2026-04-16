@@ -162,26 +162,34 @@ onSnapshot(doc(db, "status", chatUser), (docSnap) => {
 /* ✍️ Typing */
 let typingTimeout;
 
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let typingTimeout;
+
 document.getElementById("msg").addEventListener("input", async () => {
-  await addDoc(collection(db, "typing"), {
-    user: currentUser,
+  // 👇 يخليه يكتب
+  await setDoc(doc(db, "typing", currentUser), {
+    typing: true,
     to: chatUser
   });
 
   clearTimeout(typingTimeout);
 
-  typingTimeout = setTimeout(() => {}, 2000);
+  typingTimeout = setTimeout(async () => {
+    // 👇 يوقف بعد 2 ثانية
+    await setDoc(doc(db, "typing", currentUser), {
+      typing: false,
+      to: chatUser
+    });
+  }, 2000);
 });
 
-onSnapshot(collection(db, "typing"), (snapshot) => {
-  let found = false;
+onSnapshot(doc(db, "typing", chatUser), (docSnap) => {
+  const data = docSnap.data();
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    if (data.user === chatUser && data.to === currentUser) {
-      found = true;
-    }
-  });
+  document.getElementById("typing").innerText =
+    data?.typing ? "✍️ يكتب الآن..." : "";
+});
 
   document.getElementById("typing").innerText =
     found ? "✍️ يكتب الآن..." : "";
