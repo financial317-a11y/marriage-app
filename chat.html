@@ -11,7 +11,7 @@
     }
 
     .chat-box {
-      height: 70vh;
+      height: 65vh;
       overflow-y: auto;
       padding: 10px;
       display: flex;
@@ -32,6 +32,19 @@
       margin-left: auto;
     }
 
+    .status {
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .online {
+      color: green;
+    }
+
+    .offline {
+      color: gray;
+    }
+
     .input-box {
       display: flex;
       position: fixed;
@@ -46,23 +59,18 @@
       padding: 12px;
       border: none;
       outline: none;
-      font-size: 16px;
     }
 
     button {
       padding: 12px;
       border: none;
+      font-size: 20px;
       cursor: pointer;
-      font-size: 20px; /* 🔥 كبرنا الأزرار */
     }
 
     .send-btn {
       background: #ff4d6d;
       color: white;
-    }
-
-    .tools button {
-      background: #eee;
     }
 
     .emoji-panel {
@@ -87,30 +95,33 @@
 <body>
 
 <h2 id="chatWith">💬</h2>
+<div id="statusText" class="status"></div>
 
 <div class="chat-box" id="chatBox"></div>
 
-<!-- 😈 الإيموجي -->
 <div class="emoji-panel" id="emojiPanel"></div>
 
 <div class="input-box">
-
-  <div class="tools">
-    <button onclick="toggleEmoji()">😊</button>
-    <button onclick="document.getElementById('fileInput').click()">📷</button>
-    <button onclick="startRecording()">🎤</button>
-  </div>
+  <button onclick="toggleEmoji()">😊</button>
+  <button onclick="document.getElementById('fileInput').click()">📷</button>
+  <button onclick="startRecording()">🎤</button>
 
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
   <button class="send-btn" onclick="send()">➤</button>
-
 </div>
 
-<input type="file" id="fileInput" style="display:none" accept="image/*">
+<input type="file" id="fileInput" style="display:none">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -128,6 +139,18 @@ document.getElementById("chatWith").innerText = "💬 مع " + chatUser;
 
 const chatBox = document.getElementById("chatBox");
 
+/* 🟢 Online status */
+setDoc(doc(db, "status", currentUser), {
+  online: true
+});
+
+/* 🔄 متابعة حالة الشخص */
+onSnapshot(doc(db, "status", chatUser), (docSnap) => {
+  const status = docSnap.data();
+  document.getElementById("statusText").innerHTML =
+    status?.online ? "🟢 متصل الآن" : "⚫ غير متصل";
+});
+
 /* 🔥 إرسال */
 window.send = async () => {
   const text = document.getElementById("msg").value;
@@ -137,11 +160,11 @@ window.send = async () => {
     from: currentUser,
     to: chatUser,
     text: text,
-    type: "text"
+    type: "text",
+    seen: false
   });
 
   document.getElementById("msg").value = "";
-  loadMessages();
 };
 
 /* 🔥 Enter */
@@ -149,30 +172,26 @@ window.handleKey = (e) => {
   if (e.key === "Enter") send();
 };
 
-/* 😈 الإيموجي */
+/* 😈 Emoji */
 window.toggleEmoji = () => {
   const panel = document.getElementById("emojiPanel");
   panel.style.display = panel.style.display === "block" ? "none" : "block";
 };
 
-window.addEmoji = (emoji) => {
-  document.getElementById("msg").value += emoji;
+window.addEmoji = (e) => {
+  document.getElementById("msg").value += e;
 };
 
-/* 😈 قائمة إيموجي */
-const emojis = ["😀","😂","😍","😘","😎","😭","😡","😱","😴","🤔","🥰","😜",
-"❤️","💔","💖","🔥","✨","🌹","🎉","👍","👏","🙏","👌","💪","👀"];
-
-const panel = document.getElementById("emojiPanel");
-emojis.forEach(e => {
-  panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
+["😀","😂","😍","🔥","❤️","👍"].forEach(e => {
+  document.getElementById("emojiPanel").innerHTML +=
+    `<span onclick="addEmoji('${e}')">${e}</span>`;
 });
 
 /* 📷 صورة */
 document.getElementById("fileInput").addEventListener("change", function() {
   const file = this.files[0];
-
   const reader = new FileReader();
+
   reader.onload = async function(e) {
     await addDoc(collection(db, "messages"), {
       from: currentUser,
@@ -180,24 +199,21 @@ document.getElementById("fileInput").addEventListener("change", function() {
       image: e.target.result,
       type: "image"
     });
-
-    loadMessages();
   };
 
   reader.readAsDataURL(file);
 });
 
 /* 🎤 صوت */
-let mediaRecorder;
+let recorder;
 window.startRecording = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-  mediaRecorder = new MediaRecorder(stream);
+  recorder = new MediaRecorder(stream);
   let chunks = [];
 
-  mediaRecorder.ondataavailable = e => chunks.push(e.data);
+  recorder.ondataavailable = e => chunks.push(e.data);
 
-  mediaRecorder.onstop = async () => {
+  recorder.onstop = async () => {
     const blob = new Blob(chunks);
     const reader = new FileReader();
 
@@ -208,27 +224,20 @@ window.startRecording = async () => {
         audio: reader.result,
         type: "audio"
       });
-
-      loadMessages();
     };
 
     reader.readAsDataURL(blob);
   };
 
-  mediaRecorder.start();
-
-  setTimeout(() => {
-    mediaRecorder.stop();
-  }, 3000);
+  recorder.start();
+  setTimeout(() => recorder.stop(), 3000);
 };
 
-/* 📩 تحميل */
-async function loadMessages() {
-  const snapshot = await getDocs(collection(db, "messages"));
-
+/* ⚡ Realtime */
+onSnapshot(collection(db, "messages"), (snapshot) => {
   chatBox.innerHTML = "";
 
-  snapshot.forEach((doc) => {
+  snapshot.forEach(doc => {
     const msg = doc.data();
 
     if (
@@ -236,25 +245,23 @@ async function loadMessages() {
       (msg.from === chatUser && msg.to === currentUser)
     ) {
 
-      if (msg.type === "text") {
-        chatBox.innerHTML += `<div class="message ${msg.from === currentUser ? 'me' : ''}">${msg.text}</div>`;
-      }
+      let seenText = msg.from === currentUser
+        ? (msg.seen ? "✔✔" : "✔")
+        : "";
 
-      if (msg.type === "image") {
-        chatBox.innerHTML += `<div class="message"><img src="${msg.image}" width="150"></div>`;
-      }
-
-      if (msg.type === "audio") {
-        chatBox.innerHTML += `<div class="message"><audio controls src="${msg.audio}"></audio></div>`;
-      }
+      chatBox.innerHTML += `
+        <div class="message ${msg.from === currentUser ? 'me' : ''}">
+          ${msg.text || ""}
+          ${msg.image ? `<img src="${msg.image}" width="120">` : ""}
+          ${msg.audio ? `<audio controls src="${msg.audio}"></audio>` : ""}
+          <div class="status">${seenText}</div>
+        </div>
+      `;
     }
   });
 
   chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-loadMessages();
-setInterval(loadMessages, 2000);
+});
 </script>
 
 </body>
