@@ -11,7 +11,7 @@
     }
 
     .chat-box {
-      height: 65vh;
+      height: 70vh;
       overflow-y: auto;
       padding: 10px;
       display: flex;
@@ -30,11 +30,6 @@
       background: #ff4d6d;
       color: white;
       margin-left: auto;
-    }
-
-    .status {
-      font-size: 12px;
-      margin-top: 3px;
     }
 
     .input-box {
@@ -58,9 +53,20 @@
       cursor: pointer;
     }
 
-    .send-btn {
-      background: #ff4d6d;
-      color: white;
+    .emoji-panel {
+      position: fixed;
+      bottom: 60px;
+      width: 100%;
+      background: white;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .emoji-panel span {
+      font-size: 24px;
+      margin: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -71,9 +77,12 @@
 
 <div class="chat-box" id="chatBox"></div>
 
+<div class="emoji-panel" id="emojiPanel"></div>
+
 <div class="input-box">
+  <button onclick="toggleEmoji()">😊</button>
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
-  <button class="send-btn" onclick="send()">➤</button>
+  <button onclick="send()">➤</button>
 </div>
 
 <script type="module">
@@ -83,8 +92,6 @@ import {
   collection,
   addDoc,
   onSnapshot,
-  query,
-  orderBy,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -113,7 +120,7 @@ window.send = async () => {
     from: currentUser,
     to: chatUser,
     text: text,
-    time: serverTimestamp()  // 👈 ده الحل
+    time: Date.now()  // 🔥 ثابت
   });
 
   document.getElementById("msg").value = "";
@@ -124,14 +131,32 @@ window.handleKey = (e) => {
   if (e.key === "Enter") send();
 };
 
-/* ⚡ Realtime + ترتيب */
-const q = query(
-  collection(db, "messages"),
-  orderBy("time", "asc")   // 👈 ترتيب
-);
+/* 😈 Emoji */
+window.toggleEmoji = () => {
+  const panel = document.getElementById("emojiPanel");
+  panel.style.display = panel.style.display === "block" ? "none" : "block";
+};
 
-onSnapshot(q, (snapshot) => {
-  chatBox.innerHTML = "";
+window.addEmoji = (e) => {
+  document.getElementById("msg").value += e;
+};
+
+/* 😈 إيموجي كتير */
+const emojis = [
+"😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😍","😘","😜","🤩",
+"😎","😢","😭","😡","😱","😴","🤔","🙄","😇","🥰","😋","😏",
+"❤️","💔","💖","💙","💚","💛","🔥","✨","🌹","🎉","👍","👎","👏",
+"🙏","👌","💪","👀","🎶","🍕","🍔","🍟","☕","🍓","🍎","🍉"
+];
+
+const panel = document.getElementById("emojiPanel");
+emojis.forEach(e => {
+  panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
+});
+
+/* ⚡ Realtime */
+onSnapshot(collection(db, "messages"), (snapshot) => {
+  let messages = [];
 
   snapshot.forEach(doc => {
     const msg = doc.data();
@@ -140,12 +165,21 @@ onSnapshot(q, (snapshot) => {
       (msg.from === currentUser && msg.to === chatUser) ||
       (msg.from === chatUser && msg.to === currentUser)
     ) {
-      chatBox.innerHTML += `
-        <div class="message ${msg.from === currentUser ? 'me' : ''}">
-          ${msg.text}
-        </div>
-      `;
+      messages.push(msg);
     }
+  });
+
+  // 🔥 ترتيب يدوي
+  messages.sort((a, b) => a.time - b.time);
+
+  chatBox.innerHTML = "";
+
+  messages.forEach(msg => {
+    chatBox.innerHTML += `
+      <div class="message ${msg.from === currentUser ? 'me' : ''}">
+        ${msg.text}
+      </div>
+    `;
   });
 
   chatBox.scrollTop = chatBox.scrollHeight;
