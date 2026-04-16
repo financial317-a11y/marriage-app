@@ -139,6 +139,8 @@ const chatUser = localStorage.getItem("chatUser");
 document.getElementById("chatWith").innerText = "💬 مع " + chatUser;
 
 const chatBox = document.getElementById("chatBox");
+// 🟢 وقت قراءة الشات
+let lastSeenTime = Date.now();  
 
 /* Online */
 setDoc(doc(db, "status", currentUser), {
@@ -278,6 +280,7 @@ setInterval(() => {
 
 /* الرسائل */
 onSnapshot(collection(db, "messages"), (snapshot) => {
+  lastSeenTime = Date.now();
   let messages = [];
 
   snapshot.forEach(doc => {
@@ -302,6 +305,7 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
     chatBox.innerHTML += `
       <div class="message ${msg.from === currentUser ? 'me' : ''}">
         ${msg.text || ""}
+${msg.from === currentUser ? `<div style="font-size:12px">${msg.time <= lastSeenTime ? "✔✔" : "✔"}</div>` : ""}
         ${msg.image ? `<br><img src="${msg.image}" width="120">` : ""}
         ${msg.audio ? `<br><audio controls src="${msg.audio}"></audio>` : ""}
       </div>
