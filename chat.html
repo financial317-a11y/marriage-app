@@ -164,11 +164,10 @@ window.send = async () => {
   if (!text) return;
 
   await addDoc(collection(db, "messages"), {
-   from: currentUser,
-   to: chatUser,
-   text: text,
-   time: Date.now(),
-   seen: false
+    from: currentUser,
+    to: chatUser,
+    text: text,
+    time: Date.now()
   });
 
   document.getElementById("msg").value = "";
@@ -291,9 +290,6 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
 
   snapshot.forEach(doc => {
     const msg = doc.data();
-    if (msg.to === currentUser && !msg.seen) {
-  doc.ref.update({ seen: true });
-}
 
     if (
       (msg.from === currentUser && msg.to === chatUser) ||
@@ -310,8 +306,8 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
   messages.forEach(msg => {
     chatBox.innerHTML += `
       <div class="message ${msg.from === currentUser ? 'me' : ''}">
-${msg.text || ""}
-${msg.from === currentUser ? `<div style="font-size:12px">${msg.seen ? "✔✔" : "✔"}</div>` : ""}        ${msg.image ? `<br><img src="${msg.image}" width="120">` : ""}
+        ${msg.text || ""}
+        ${msg.image ? `<br><img src="${msg.image}" width="120">` : ""}
         ${msg.audio ? `<br><audio controls src="${msg.audio}"></audio>` : ""}
       </div>
     `;
