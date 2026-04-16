@@ -176,31 +176,45 @@ document.getElementById("fileInput").addEventListener("change", function() {
 
 /* صوت */
 window.startRecording = async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  const recorder = new MediaRecorder(stream);
+  try {
+    alert("🎤 جاري التسجيل...");
 
-  let chunks = [];
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-  recorder.ondataavailable = e => chunks.push(e.data);
+    const recorder = new MediaRecorder(stream);
+    let chunks = [];
 
-  recorder.onstop = async () => {
-    const blob = new Blob(chunks);
-    const reader = new FileReader();
+    recorder.ondataavailable = e => chunks.push(e.data);
 
-    reader.onloadend = async () => {
-      await addDoc(collection(db, "messages"), {
-        from: currentUser,
-        to: chatUser,
-        audio: reader.result,
-        time: Date.now()
-      });
+    recorder.onstop = async () => {
+      alert("✅ تم تسجيل الصوت");
+
+      const blob = new Blob(chunks);
+      const reader = new FileReader();
+
+      reader.onloadend = async () => {
+        await addDoc(collection(db, "messages"), {
+          from: currentUser,
+          to: chatUser,
+          audio: reader.result,
+          time: Date.now()
+        });
+      };
+
+      reader.readAsDataURL(blob);
     };
 
-    reader.readAsDataURL(blob);
-  };
+    recorder.start();
 
-  recorder.start();
-  setTimeout(() => recorder.stop(), 3000);
+    // ⏱ يسجل 3 ثواني
+    setTimeout(() => {
+      recorder.stop();
+    }, 3000);
+
+  } catch (err) {
+    alert("❌ لازم تسمح للمايك 🎤");
+    console.log(err);
+  }
 };
 
 /* عرض الرسائل */
