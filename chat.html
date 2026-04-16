@@ -126,7 +126,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 /* 🟢 ضفت doc + setDoc فقط */
-import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, updateDoc } 
+import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc } 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -165,10 +165,9 @@ window.send = async () => {
 
   await addDoc(collection(db, "messages"), {
     from: currentUser,
-to: chatUser,
-text: text,
-time: Date.now(),
-seen: false
+    to: chatUser,
+    text: text,
+    time: Date.now()
   });
 
   document.getElementById("msg").value = "";
@@ -260,7 +259,6 @@ window.stopRecording = () => {
     const reader = new FileReader();
 
     reader.onloadend = async () => {
-      if (chunks.length === 0) return;
       await addDoc(collection(db, "messages"), {
         from: currentUser,
         to: chatUser,
@@ -270,9 +268,6 @@ window.stopRecording = () => {
     };
 
     reader.readAsDataURL(blob);
-    setTimeout(() => {
-  chatBox.scrollTop = chatBox.scrollHeight;
-}, 500);
 
     stream.getTracks().forEach(track => track.stop());
   };
@@ -295,11 +290,6 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
 
   snapshot.forEach(doc => {
     const msg = doc.data();
-if (msg.to === currentUser && !msg.seen) {
-  setTimeout(() => {
-    updateDoc(doc.ref, { seen: true });
-  }, 1000);
-}
 
     if (
       (msg.from === currentUser && msg.to === chatUser) ||
@@ -317,7 +307,6 @@ if (msg.to === currentUser && !msg.seen) {
     chatBox.innerHTML += `
       <div class="message ${msg.from === currentUser ? 'me' : ''}">
         ${msg.text || ""}
-${msg.from === currentUser ? `<div style="font-size:12px">${msg.seen ? "✔✔" : "✔"}</div>` : ""}
         ${msg.image ? `<br><img src="${msg.image}" width="120">` : ""}
         ${msg.audio ? `<br><audio controls src="${msg.audio}"></audio>` : ""}
       </div>
