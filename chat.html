@@ -260,6 +260,7 @@ window.stopRecording = () => {
     const reader = new FileReader();
 
     reader.onloadend = async () => {
+      if (chunks.length === 0) return;
       await addDoc(collection(db, "messages"), {
         from: currentUser,
         to: chatUser,
@@ -269,6 +270,9 @@ window.stopRecording = () => {
     };
 
     reader.readAsDataURL(blob);
+    setTimeout(() => {
+  chatBox.scrollTop = chatBox.scrollHeight;
+}, 500);
 
     stream.getTracks().forEach(track => track.stop());
   };
@@ -291,8 +295,10 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
 
   snapshot.forEach(doc => {
     const msg = doc.data();
-    if (msg.to === currentUser && !msg.seen) {
-  updateDoc(doc.ref, { seen: true });
+if (msg.to === currentUser && !msg.seen) {
+  setTimeout(() => {
+    updateDoc(doc.ref, { seen: true });
+  }, 1000);
 }
 
     if (
