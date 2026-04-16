@@ -11,7 +11,7 @@
     }
 
     .chat-box {
-      height: 75vh;
+      height: 70vh;
       overflow-y: auto;
       padding: 10px;
       display: flex;
@@ -23,7 +23,6 @@
       border-radius: 15px;
       margin: 5px;
       max-width: 70%;
-      font-size: 14px;
       background: white;
     }
 
@@ -33,22 +32,12 @@
       margin-left: auto;
     }
 
-    .emoji-bar {
-      text-align: center;
-      margin: 5px;
-    }
-
-    .emoji-bar span {
-      font-size: 20px;
-      margin: 5px;
-      cursor: pointer;
-    }
-
     .input-box {
       display: flex;
       position: fixed;
       bottom: 0;
       width: 100%;
+      background: white;
     }
 
     input {
@@ -60,9 +49,35 @@
 
     button {
       padding: 12px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .send-btn {
       background: #ff4d6d;
       color: white;
-      border: none;
+    }
+
+    .emoji-btn {
+      background: #eee;
+      font-size: 20px;
+    }
+
+    .emoji-panel {
+      position: fixed;
+      bottom: 60px;
+      width: 100%;
+      background: white;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      padding: 10px;
+    }
+
+    .emoji-panel span {
+      font-size: 22px;
+      margin: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -73,17 +88,13 @@
 
 <div class="chat-box" id="chatBox"></div>
 
-<!-- 😈 الإيموجي -->
-<div class="emoji-bar">
-  <span onclick="addEmoji('😊')">😊</span>
-  <span onclick="addEmoji('❤️')">❤️</span>
-  <span onclick="addEmoji('😂')">😂</span>
-  <span onclick="addEmoji('🔥')">🔥</span>
-</div>
+<!-- 😈 لوحة الإيموجي -->
+<div class="emoji-panel" id="emojiPanel"></div>
 
 <div class="input-box">
+  <button class="emoji-btn" onclick="toggleEmoji()">😊</button>
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
-  <button onclick="send()">إرسال</button>
+  <button class="send-btn" onclick="send()">➤</button>
 </div>
 
 <script type="module">
@@ -109,7 +120,6 @@ const chatBox = document.getElementById("chatBox");
 /* 🔥 إرسال */
 window.send = async () => {
   const text = document.getElementById("msg").value;
-
   if (!text) return;
 
   await addDoc(collection(db, "messages"), {
@@ -124,16 +134,33 @@ window.send = async () => {
 
 /* 🔥 Enter */
 window.handleKey = (e) => {
-  if (e.key === "Enter") {
-    send();
-  }
+  if (e.key === "Enter") send();
 };
 
-/* 😈 إيموجي */
+/* 😈 إظهار الإيموجي */
+window.toggleEmoji = () => {
+  const panel = document.getElementById("emojiPanel");
+  panel.style.display = panel.style.display === "block" ? "none" : "block";
+};
+
+/* 😈 إضافة إيموجي */
 window.addEmoji = (emoji) => {
   const input = document.getElementById("msg");
   input.value += emoji;
 };
+
+/* 😈 توليد إيموجي كتير */
+const emojis = [
+"😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😍","😘","😜","🤩",
+"😎","😢","😭","😡","😱","😴","🤔","🙄","😇","🥰","😋","😏",
+"❤️","💔","💖","💙","💚","💛","🔥","✨","🌹","🎉","👍","👎","👏",
+"🙏","👌","💪","👀","🎶","🍕","🍔","🍟","☕","🍓","🍎","🍉"
+];
+
+const panel = document.getElementById("emojiPanel");
+emojis.forEach(e => {
+  panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
+});
 
 /* 📩 تحميل الرسائل */
 async function loadMessages() {
