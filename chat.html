@@ -81,7 +81,6 @@
 <body>
 
 <h2 id="chatWith"></h2>
-  <div id="status"></div>
 
 <!-- ✍️ typing -->
 <div id="typing" style="color:gray;"></div>
@@ -123,8 +122,8 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
   authDomain: "marriage-app-3b2d2.firebaseapp.com",
@@ -133,10 +132,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
- // 🟢 أنا أونلاين
-setDoc(doc(db, "status", currentUser), {
-  online: true
-}); 
 
 const currentUser = localStorage.getItem("userEmail");
 const chatUser = localStorage.getItem("chatUser");
@@ -144,12 +139,6 @@ const chatUser = localStorage.getItem("chatUser");
 document.getElementById("chatWith").innerText = "💬 مع " + chatUser;
 
 const chatBox = document.getElementById("chatBox");
-  onSnapshot(doc(db, "status", chatUser), (docSnap) => {
-  const data = docSnap.data();
-
-  document.getElementById("status").innerText =
-    data?.online ? "🟢 متصل" : "⚫ غير متصل";
-});
 
 /* إرسال */
 window.send = async () => {
