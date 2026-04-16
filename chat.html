@@ -84,14 +84,34 @@
 
 <div class="chat-box" id="chatBox"></div>
 
+<!-- 🎤 صندوق التسجيل -->
+<div id="recordBox" style="
+  display:none;
+  position:fixed;
+  bottom:70px;
+  right:10px;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+">
+🎤 جاري التسجيل...
+</div>
+
+<!-- 😈 الإيموجي -->
 <div class="emoji-panel" id="emojiPanel"></div>
 
 <div class="input-box">
 
-  <!-- 🔥 الأزرار رجعت -->
   <button onclick="toggleEmoji()">😊</button>
+
   <button onclick="document.getElementById('fileInput').click()">📷</button>
-  <button onclick="startRecording()">🎤</button>
+
+  <button 
+    onmousedown="startRecording()" 
+    onmouseup="stopRecording()"
+    ontouchstart="startRecording()" 
+    ontouchend="stopRecording()"
+  >🎤</button>
 
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
   <button class="send-btn" onclick="send()">➤</button>
@@ -150,7 +170,7 @@ window.addEmoji = (emoji) => {
   document.getElementById("msg").value += emoji;
 };
 
-const emojis = ["😀","😂","😍","🔥","❤️","👍","😭","😎"];
+const emojis = ["😀","😂","😍","🔥","❤️","👍","😭","😎","😡","🥰","😜","🤩"];
 
 const panel = document.getElementById("emojiPanel");
 emojis.forEach(e => {
@@ -174,53 +194,61 @@ document.getElementById("fileInput").addEventListener("change", function() {
   reader.readAsDataURL(file);
 });
 
-/* صوت */
+/* 🎤 صوت (مضغوط) */
+let recorder;
+let chunks = [];
+let stream;
+
 window.startRecording = async () => {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    document.getElementById("recordBox").style.display = "block";
 
-    const recorder = new MediaRecorder(stream);
-    let chunks = [];
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    recorder = new MediaRecorder(stream);
+    chunks = [];
 
     recorder.ondataavailable = e => {
-      if (e.data.size > 0) {
-        chunks.push(e.data);
-      }
-    };
-
-    recorder.onstop = async () => {
-      if (chunks.length === 0) {
-        console.log("❌ مفيش صوت اتسجل");
-        return;
-      }
-
-      const blob = new Blob(chunks, { type: 'audio/webm' });
-      const reader = new FileReader();
-
-      reader.onloadend = async () => {
-        await addDoc(collection(db, "messages"), {
-          from: currentUser,
-          to: chatUser,
-          audio: reader.result,
-          time: Date.now()
-        });
-      };
-
-      reader.readAsDataURL(blob);
+      if (e.data.size > 0) chunks.push(e.data);
     };
 
     recorder.start();
 
-    // يسجل 3 ثواني
-    setTimeout(() => {
-      recorder.stop();
-    }, 3000);
-
   } catch (err) {
-    console.error(err);
     alert("❌ لازم تسمح للمايك 🎤");
   }
 };
+
+window.stopRecording = async () => {
+  document.getElementById("recordBox").style.display = "none";
+
+  if (!recorder) return;
+
+  recorder.stop();
+
+  recorder.onstop = async () => {
+    if (chunks.length === 0) return;
+
+    const blob = new Blob(chunks);
+    const reader = new FileReader();
+
+    reader.onloadend = async () => {
+      await addDoc(collection(db, "messages"), {
+        from: currentUser,
+        to: chatUser,
+        audio: reader.result,
+        time: Date.now()
+      });
+    };
+
+    reader.readAsDataURL(blob);
+  };
+
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+};
+
 /* عرض الرسائل */
 onSnapshot(collection(db, "messages"), (snapshot) => {
   let messages = [];
@@ -232,9 +260,7 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
       (msg.from === currentUser && msg.to === chatUser) ||
       (msg.from === chatUser && msg.to === currentUser)
     ) {
-      if (msg.time) {
-  messages.push(msg);
-}
+      if (msg.time) messages.push(msg);
     }
   });
 
@@ -258,4 +284,3 @@ onSnapshot(collection(db, "messages"), (snapshot) => {
 
 </body>
 </html>
-
