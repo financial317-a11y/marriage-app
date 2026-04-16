@@ -177,19 +177,24 @@ document.getElementById("fileInput").addEventListener("change", function() {
 /* صوت */
 window.startRecording = async () => {
   try {
-    alert("🎤 جاري التسجيل...");
-
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
     const recorder = new MediaRecorder(stream);
     let chunks = [];
 
-    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.ondataavailable = e => {
+      if (e.data.size > 0) {
+        chunks.push(e.data);
+      }
+    };
 
     recorder.onstop = async () => {
-      alert("✅ تم تسجيل الصوت");
+      if (chunks.length === 0) {
+        console.log("❌ مفيش صوت اتسجل");
+        return;
+      }
 
-      const blob = new Blob(chunks);
+      const blob = new Blob(chunks, { type: 'audio/webm' });
       const reader = new FileReader();
 
       reader.onloadend = async () => {
@@ -206,17 +211,16 @@ window.startRecording = async () => {
 
     recorder.start();
 
-    // ⏱ يسجل 3 ثواني
+    // يسجل 3 ثواني
     setTimeout(() => {
       recorder.stop();
     }, 3000);
 
   } catch (err) {
+    console.error(err);
     alert("❌ لازم تسمح للمايك 🎤");
-    console.log(err);
   }
 };
-
 /* عرض الرسائل */
 onSnapshot(collection(db, "messages"), (snapshot) => {
   let messages = [];
