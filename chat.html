@@ -82,9 +82,12 @@
 
 <h2 id="chatWith"></h2>
 
+<!-- ✍️ typing -->
+<div id="typing" style="color:gray;"></div>
+
 <div class="chat-box" id="chatBox"></div>
 
-<!-- 🎤 صندوق التسجيل -->
+<!-- 🎤 تسجيل -->
 <div id="recordBox" style="
   display:none;
   position:fixed;
@@ -98,14 +101,10 @@
 <div id="wave">▂▃▅▇▅▃▂</div>
 </div>
 
-
-<!-- 😈 الإيموجي -->
 <div class="emoji-panel" id="emojiPanel"></div>
 
 <div class="input-box">
-
   <button onclick="toggleEmoji()">😊</button>
-
   <button onclick="document.getElementById('fileInput').click()">📷</button>
 
   <button 
@@ -117,7 +116,6 @@
 
   <input id="msg" placeholder="اكتب رسالة..." onkeypress="handleKey(event)">
   <button class="send-btn" onclick="send()">➤</button>
-
 </div>
 
 <input type="file" id="fileInput" style="display:none">
@@ -162,6 +160,21 @@ window.handleKey = (e) => {
   if (e.key === "Enter") send();
 };
 
+/* ✍️ typing */
+let typingTimeout;
+
+document.getElementById("msg").addEventListener("input", () => {
+  const typingDiv = document.getElementById("typing");
+
+  typingDiv.innerText = "✍️ يكتب الآن...";
+
+  clearTimeout(typingTimeout);
+
+  typingTimeout = setTimeout(() => {
+    typingDiv.innerText = "";
+  }, 2000);
+});
+
 /* Emoji */
 window.toggleEmoji = () => {
   const panel = document.getElementById("emojiPanel");
@@ -173,8 +186,8 @@ window.addEmoji = (emoji) => {
 };
 
 const emojis = ["😀","😂","😍","🔥","❤️","👍","😭","😎","😡","🥰","😜","🤩"];
-
 const panel = document.getElementById("emojiPanel");
+
 emojis.forEach(e => {
   panel.innerHTML += `<span onclick="addEmoji('${e}')">${e}</span>`;
 });
@@ -196,11 +209,11 @@ document.getElementById("fileInput").addEventListener("change", function() {
   reader.readAsDataURL(file);
 });
 
+/* 🎤 صوت */
 let recorder;
 let chunks = [];
 let stream;
 
-/* 🎤 بدء التسجيل */
 window.startRecording = async () => {
   document.getElementById("recordBox").style.display = "block";
 
@@ -210,23 +223,13 @@ window.startRecording = async () => {
   chunks = [];
 
   recorder.ondataavailable = (e) => {
-    if (e.data.size > 0) {
-      chunks.push(e.data);
-    }
+    if (e.data.size > 0) chunks.push(e.data);
   };
 
   recorder.start();
 };
 
-/* 🛑 إيقاف التسجيل */
 window.stopRecording = () => {
-  setInterval(() => {
-  const wave = document.getElementById("wave");
-  if (wave && document.getElementById("recordBox").style.display === "block") {
-    const shapes = ["▂▃▅▇▅▃▂", "▃▅▇▅▃▂▃", "▅▇▅▃▂▃▅"];
-    wave.innerText = shapes[Math.floor(Math.random() * shapes.length)];
-  }
-}, 200);
   document.getElementById("recordBox").style.display = "none";
 
   if (!recorder) return;
@@ -248,12 +251,20 @@ window.stopRecording = () => {
 
     reader.readAsDataURL(blob);
 
-    // 🔥 اقفل المايك
     stream.getTracks().forEach(track => track.stop());
   };
 
   recorder.stop();
 };
+
+/* 🎵 ذبذبات */
+setInterval(() => {
+  const wave = document.getElementById("wave");
+  if (wave && document.getElementById("recordBox").style.display === "block") {
+    const shapes = ["▂▃▅▇▅▃▂", "▃▅▇▅▃▂▃", "▅▇▅▃▂▃▅"];
+    wave.innerText = shapes[Math.floor(Math.random() * shapes.length)];
+  }
+}, 200);
 
 /* عرض الرسائل */
 onSnapshot(collection(db, "messages"), (snapshot) => {
