@@ -5,20 +5,21 @@
 
 <style>
   .top-bar {
-  width: 100%;
-  background: #ff4d6d;
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 18px;
-  font-weight: bold;
-}
+    width: 100%;
+    background: #ff4d6d;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
 
-.top-bar span {
-  cursor: pointer;
-}
+  .top-bar span {
+    cursor: pointer;
+  }
+
   body {
     margin: 0;
     font-family: Arial;
@@ -39,6 +40,22 @@
     flex-wrap: wrap;
     justify-content: space-around;
     align-content: space-around;
+  }
+
+  /* 👇 الصور الدائرية */
+  .users-preview {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px;
+  }
+
+  .users-preview img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
 
   .card {
@@ -74,54 +91,20 @@
 </head>
 
 <body>
+
   <div class="top-bar">
-  <span>👋 مرحبا بك <b id="userName"></b></span>
+    <span>👋 مرحبا بك <b id="userName"></b></span>
+    <span onclick="goUsers()">👥 المستخدمين</span>
+    <span onclick="goMessages()">💬 الرسائل</span>
+    <span onclick="goProfile()">👤 بروفايلي</span>
+  </div>
 
-  <!-- 👇 ضفنا المستخدمين هنا -->
-  <span onclick="goUsers()">👥 المستخدمين</span>
+  <!-- 👇 هنا الصور الدائرية -->
+  <div class="users-preview" id="usersPreview"></div>
 
-  <span onclick="goMessages()">💬 الرسائل</span>
-  <span onclick="goProfile()">👤 بروفايلي</span>
-</div>
-
-<div id="users"></div>
+  <div id="users"></div>
 
 <script type="module">
-  async function countMessages() {
-  const snapshot = await getDocs(collection(db, "messages"));
-
-  const currentUser = localStorage.getItem("userEmail");
-    document.getElementById("userName").innerText = currentUser;
-
-    window.goProfile = () => {
-      window.location.href = "profile.html";
-    };
-
-    window.goMessages = () => {
-      window.location.href = "chat.html";
-    };
-
-    // 👇 دالة المستخدمين الجديدة
-    window.goUsers = () => {
-      window.location.href = "users.html";
-    };
-
-  let count = 0;
-
-  snapshot.forEach((doc) => {
-    const msg = doc.data();
-
-    if (msg.to === currentUser) {
-      count++;
-    }
-  });
-
-  document.getElementById("msgCount").innerText = count;
-}
-
-countMessages();
-setInterval(countMessages, 3000);
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -135,9 +118,21 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const usersDiv = document.getElementById("users");
+const previewDiv = document.getElementById("usersPreview");
 
 let users = [];
 let index = 0;
+
+/* 👇 عرض الصور الدائرية */
+function showPreview() {
+  previewDiv.innerHTML = "";
+
+  users.slice(0, 5).forEach(user => {
+    const img = document.createElement("img");
+    img.src = user.image;
+    previewDiv.appendChild(img);
+  });
+}
 
 async function loadUsers() {
   const querySnapshot = await getDocs(collection(db, "users"));
@@ -146,6 +141,7 @@ async function loadUsers() {
     users.push(doc.data());
   });
 
+  showPreview(); // 👈 مهم
   showUser();
 }
 
@@ -176,16 +172,19 @@ function showUser() {
   `;
 }
 
+window.goUsers = () => {
+  window.location.href = "users.html";
+};
+
+window.goMessages = () => {
+  window.location.href = "chat.html";
+};
+
+window.goProfile = () => {
+  window.location.href = "profile.html";
+};
+
 window.like = async () => {
-
-  const done = localStorage.getItem("profileDone");
-
-  if (!done) {
-    alert("كمّل بروفايلك الأول 👤");
-    window.location.href = "profile.html";
-    return;
-  }
-
   const currentUser = localStorage.getItem("userEmail");
   const likedUser = users[index].name;
 
@@ -203,8 +202,8 @@ window.like = async () => {
   const snapshot = await getDocs(q);
 
   if (!snapshot.empty) {
-   localStorage.setItem("chatUser", likedUser);
-   window.location.href = "chat.html";
+    localStorage.setItem("chatUser", likedUser);
+    window.location.href = "chat.html";
   }
 
   const card = document.querySelector(".card");
@@ -229,32 +228,6 @@ window.skip = () => {
     showUser();
   }, 300);
 };
-
-let startX = 0;
-
-document.addEventListener("mousedown", (e) => {
-  startX = e.clientX;
-});
-
-document.addEventListener("mouseup", (e) => {
-  let diff = e.clientX - startX;
-
-  if (diff > 100) like();
-  else if (diff < -100) skip();
-});
-
-let startTouch = 0;
-
-document.addEventListener("touchstart", (e) => {
-  startTouch = e.touches[0].clientX;
-});
-
-document.addEventListener("touchend", (e) => {
-  let diff = e.changedTouches[0].clientX - startTouch;
-
-  if (diff > 100) like();
-  else if (diff < -100) skip();
-});
 
 loadUsers();
 </script>
