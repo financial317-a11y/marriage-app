@@ -70,6 +70,18 @@
   button:hover {
     background: gold;
   }
+  #usersPreview {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px;
+}
+
+#usersPreview img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
 </style>
 </head>
 
@@ -82,6 +94,7 @@
     
 </div>
 <h2>المستخدمين:</h2>
+  <div id="usersPreview"></div>
 <div id="users"></div>
 
 <script type="module">
@@ -255,6 +268,23 @@ document.addEventListener("touchend", (e) => {
 });
 
 loadUsers();
+  import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const preview = document.getElementById("usersPreview");
+
+const snap = await getDocs(collection(db, "users"));
+
+let count = 0;
+
+snap.forEach(doc => {
+  if (count < 5) {
+    const u = doc.data();
+
+    preview.innerHTML += `<img src="${u.image}">`;
+
+    count++;
+  }
+});
 </script>
   
 
