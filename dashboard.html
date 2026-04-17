@@ -4,6 +4,21 @@
   <title>Dashboard</title>
 
 <style>
+  .top-bar {
+  width: 100%;
+  background: #ff4d6d;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.top-bar span {
+  cursor: pointer;
+}
   body {
     margin: 0;
     font-family: Arial;
@@ -59,6 +74,11 @@
 </head>
 
 <body>
+  <div class="top-bar">
+  <span>👋 مرحبا بك <b id="userName"></b></span>
+  <span onclick="goProfile()">👤 بروفايلي</span>
+  <span onclick="goMessages()">💬 الرسائل</span>
+</div>
 
 <h1>مرحبا بك 👋</h1>
  <a href="messages.html">📩 الرسائل (<span id="msgCount">0</span>)</a>
@@ -72,6 +92,14 @@
   const snapshot = await getDocs(collection(db, "messages"));
 
   const currentUser = localStorage.getItem("userEmail");
+    document.getElementById("userName").innerText = currentUser;
+    window.goProfile = () => {
+  window.location.href = "profile.html";
+};
+
+window.goMessages = () => {
+  window.location.href = "chat.html";
+};
   let count = 0;
 
   snapshot.forEach((doc) => {
