@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <title>المستخدمين</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #ffe6ea;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      margin: 10px auto;
+      padding: 10px;
+      width: 250px;
+      border-radius: 15px;
+    }
+
+    img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>👥 المستخدمين</h2>
+<div id="usersList"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "...",
+  projectId: "marriage-app-3b2d2",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const list = document.getElementById("usersList");
+
+const snapshot = await getDocs(collection(db, "users"));
+
+snapshot.forEach(doc => {
+  const u = doc.data();
+
+  list.innerHTML += `
+    <div class="card">
+      <img src="${u.image}">
+      <h3>${u.name}</h3>
+      <p>${u.age} سنة</p>
+      <p>${u.country}</p>
+    </div>
+  `;
+});
+</script>
+
+</body>
+</html>
