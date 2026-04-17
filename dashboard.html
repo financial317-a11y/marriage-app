@@ -76,11 +76,14 @@
 <body>
   <div class="top-bar">
   <span>👋 مرحبا بك <b id="userName"></b></span>
-  <span onclick="goProfile()">👤 بروفايلي</span>
+
+  <!-- 👇 ضفنا المستخدمين هنا -->
+  <span onclick="goUsers()">👥 المستخدمين</span>
+
   <span onclick="goMessages()">💬 الرسائل</span>
-    
+  <span onclick="goProfile()">👤 بروفايلي</span>
 </div>
-<h2>المستخدمين:</h2>
+
 <div id="users"></div>
 
 <script type="module">
@@ -89,13 +92,20 @@
 
   const currentUser = localStorage.getItem("userEmail");
     document.getElementById("userName").innerText = currentUser;
-    window.goProfile = () => {
-  window.location.href = "profile.html";
-};
 
-window.goMessages = () => {
-  window.location.href = "chat.html";
-};
+    window.goProfile = () => {
+      window.location.href = "profile.html";
+    };
+
+    window.goMessages = () => {
+      window.location.href = "chat.html";
+    };
+
+    // 👇 دالة المستخدمين الجديدة
+    window.goUsers = () => {
+      window.location.href = "users.html";
+    };
+
   let count = 0;
 
   snapshot.forEach((doc) => {
@@ -111,6 +121,7 @@ window.goMessages = () => {
 
 countMessages();
 setInterval(countMessages, 3000);
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -178,13 +189,11 @@ window.like = async () => {
   const currentUser = localStorage.getItem("userEmail");
   const likedUser = users[index].name;
 
-  // 💾 سجل اللايك
   await addDoc(collection(db, "likes"), {
     from: currentUser,
     to: likedUser
   });
 
-  // 🔍 نشوف هل في لايك عكسي؟
   const q = query(
     collection(db, "likes"),
     where("from", "==", likedUser),
@@ -198,7 +207,6 @@ window.like = async () => {
    window.location.href = "chat.html";
   }
 
-  // 🎬 الحركة
   const card = document.querySelector(".card");
 
   card.style.transform = "translateX(200px)";
@@ -222,7 +230,6 @@ window.skip = () => {
   }, 300);
 };
 
-/* 👇 الماوس */
 let startX = 0;
 
 document.addEventListener("mousedown", (e) => {
@@ -236,7 +243,6 @@ document.addEventListener("mouseup", (e) => {
   else if (diff < -100) skip();
 });
 
-/* 👇 الموبايل */
 let startTouch = 0;
 
 document.addEventListener("touchstart", (e) => {
@@ -252,7 +258,6 @@ document.addEventListener("touchend", (e) => {
 
 loadUsers();
 </script>
-  
 
 </body>
 </html>
