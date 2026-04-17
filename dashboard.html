@@ -75,6 +75,7 @@
 
 <body>
   <div class="top-bar">
+  <span onclick="goUsers()">👥 المستخدمين</span>
   <span>👋 مرحبا بك <b id="userName"></b></span>
   <span onclick="goProfile()">👤 بروفايلي</span>
   <span onclick="goMessages()">💬 الرسائل</span>
@@ -94,6 +95,9 @@
 };
 
 window.goMessages = () => {
+  window.goUsers = () => {
+  window.location.href = "users.html";
+};
   window.location.href = "chat.html";
 };
   let count = 0;
