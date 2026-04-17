@@ -28,13 +28,13 @@
     }
 
     select, input {
-  width: 90%;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  background: white;
-}
+      width: 90%;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: white;
+    }
 
     button {
       width: 95%;
@@ -46,36 +46,38 @@
       font-size: 16px;
       margin-top: 10px;
     }
-    .upload-box {
-  width: 120px;
-  height: 120px;
-  background: #eee;
-  border-radius: 50%;
-  margin: 20px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  cursor: pointer;
-  overflow: hidden;
-}
 
-.upload-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    .upload-box {
+      width: 120px;
+      height: 120px;
+      background: #eee;
+      border-radius: 50%;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .upload-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   </style>
 </head>
 
 <body>
 
-<div class="box">
+<!-- الفورم -->
+<div class="box" id="formBox">
   <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-  <span>📷</span>
-</div>
+    <span>📷</span>
+  </div>
 
-<input type="file" id="fileInput" accept="image/*" style="display:none">
+  <input type="file" id="fileInput" accept="image/*" style="display:none">
 
   <label>النوع</label>
   <select id="gender">
@@ -138,6 +140,9 @@
   <button onclick="saveProfile()">حفظ البروفايل</button>
 </div>
 
+<!-- عرض البروفايل -->
+<div class="box" id="profileView" style="display:none;"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -166,6 +171,9 @@ for (let i = 40; i <= 120; i++) {
   document.getElementById("weight").innerHTML += `<option>${i} كجم</option>`;
 }
 
+let imageBase64 = "";
+
+/* حفظ */
 window.saveProfile = async () => {
   const profile = {
     gender: document.getElementById("gender").value,
@@ -184,12 +192,41 @@ window.saveProfile = async () => {
 
   await addDoc(collection(db, "users"), profile);
 
-  localStorage.setItem("profileDone", "yes");
+  // 🟢 حفظ محلي
+  localStorage.setItem("profileData", JSON.stringify(profile));
 
   alert("تم حفظ البروفايل ✅");
-};
-    let imageBase64 = "";
 
+  showProfile(profile);
+};
+
+/* عرض البروفايل */
+function showProfile(data) {
+  document.getElementById("formBox").style.display = "none";
+  document.getElementById("profileView").style.display = "block";
+
+  document.getElementById("profileView").innerHTML = `
+    <img src="${data.image}" width="100" style="border-radius:50%"><br><br>
+    <b>${data.name}</b><br>
+    ${data.age} سنة<br>
+    ${data.country}<br>
+    ${data.job}<br>
+    ${data.status}<br>
+    ${data.religion}<br>
+    ${data.education}<br>
+    أطفال: ${data.children}<br>
+    الطول: ${data.height}<br>
+    الوزن: ${data.weight}
+  `;
+}
+
+/* تحميل البيانات */
+const saved = JSON.parse(localStorage.getItem("profileData"));
+if (saved) {
+  showProfile(saved);
+}
+
+/* صورة */
 document.getElementById("fileInput").addEventListener("change", function() {
   const file = this.files[0];
 
@@ -204,7 +241,6 @@ document.getElementById("fileInput").addEventListener("change", function() {
   reader.readAsDataURL(file);
 });
 </script>
-
 
 </body>
 </html>
