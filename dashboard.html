@@ -87,10 +87,9 @@
 
 <body>
   <div class="top-bar">
-  <span onclick="goUsers()">👥 المستخدمين</span>
-  <span>👋 مرحبا بك <b id="userName"></b></span>
-  <span onclick="goProfile()">👤 بروفايلي</span>
-  <span onclick="goMessages()">💬 الرسائل</span>
+ <span onclick="goProfile()">👤 بروفايلي</span>
+<span onclick="goMessages()">💬 الرسائل</span>
+<span onclick="goUsers()">👥 المستخدمين</span>
     
 </div>
 <h2>المستخدمين:</h2>
@@ -129,7 +128,15 @@ window.goMessages = () => {
 countMessages();
 setInterval(countMessages, 3000);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  onSnapshot,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -139,7 +146,17 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+window.goProfile = () => {
+  window.location.href = "profile.html";
+};
 
+window.goMessages = () => {
+  window.location.href = "chat.html";
+};
+
+window.goUsers = () => {
+  window.location.href = "users.html";
+};
 const usersDiv = document.getElementById("users");
 
 let users = [];
