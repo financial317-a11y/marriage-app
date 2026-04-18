@@ -28,12 +28,30 @@
       align-content: space-around;
     }
 
+    /* 🟢 اسم الموقع */
+    .site-title {
+      color: #ff4d6d;
+      margin-top: 40px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    /* 🟢 الكارت */
+    .login-box {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      width: 300px;
+      margin: 20px auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
     input {
       padding: 10px;
       margin: 10px;
       border-radius: 10px;
       border: 1px solid #ccc;
-      width: 200px;
+      width: 90%;
     }
 
     button {
@@ -43,18 +61,25 @@
       padding: 10px 15px;
       border-radius: 20px;
       cursor: pointer;
+      width: 95%;
     }
   </style>
 
 </head>
 <body>
 
-  <h1>تسجيل الدخول</h1>
+  <!-- 🟢 اسم الموقع -->
+  <h1 class="site-title">💖 نصيبك</h1>
 
-  <input id="email" type="email" placeholder="الإيميل"><br><br>
-  <input id="password" type="password" placeholder="الباسورد"><br><br>
+  <!-- 🟢 مستطيل تسجيل الدخول -->
+  <div class="login-box">
+    <h2>تسجيل الدخول</h2>
 
-  <button onclick="login()">دخول</button>
+    <input id="email" type="email" placeholder="الإيميل"><br><br>
+    <input id="password" type="password" placeholder="الباسورد"><br><br>
+
+    <button onclick="login()">دخول</button>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -75,9 +100,9 @@
 
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-  localStorage.setItem("userEmail", email);
-  window.location.href = "dashboard.html";
-})
+          localStorage.setItem("userEmail", email);
+          window.location.href = "dashboard.html";
+        })
         .catch((error) => {
           alert(error.message);
         });
