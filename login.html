@@ -28,6 +28,15 @@
       align-content: space-around;
     }
 
+    /* 🟢 اسم الموقع */
+    .site-title {
+      text-align: center;
+      color: #ff4d6d;
+      margin-top: 30px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
     input {
       padding: 10px;
       margin: 10px;
@@ -49,8 +58,11 @@
 
 </head>
 <body>
- 
-  <h1>تسجيل الدخول</h1>
+
+  <!-- 🟢 اسم الموقع -->
+  <h1 class="site-title">💖 شريك العمر</h1>
+
+  <h2>تسجيل الدخول</h2>
 
   <input id="email" type="email" placeholder="الإيميل"><br><br>
   <input id="password" type="password" placeholder="الباسورد"><br><br>
@@ -76,9 +88,9 @@
 
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-  localStorage.setItem("userEmail", email);
-  window.location.href = "dashboard.html";
-})
+          localStorage.setItem("userEmail", email);
+          window.location.href = "dashboard.html";
+        })
         .catch((error) => {
           alert(error.message);
         });
