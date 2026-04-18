@@ -97,6 +97,9 @@
     <span onclick="goUsers()">👥 المستخدمين</span>
     <span onclick="goMessages()">💬 الرسائل</span>
     <span onclick="goProfile()">👤 بروفايلي</span>
+    <span onclick="goSearch()">🔎 البحث</span>
+<span onclick="goLikes()">❤️ الإعجابات</span>
+<span onclick="goVisits()">👁️ الزيارات</span>
   </div>
 
   <!-- 👇 هنا الصور الدائرية -->
@@ -230,6 +233,17 @@ window.skip = () => {
 };
 
 loadUsers();
+  window.goSearch = () => {
+  window.location.href = "search.html";
+};
+
+window.goLikes = () => {
+  window.location.href = "likes.html";
+};
+
+window.goVisits = () => {
+  window.location.href = "visits.html";
+};
 </script>
 
 </body>
