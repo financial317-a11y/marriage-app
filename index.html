@@ -4,202 +4,253 @@
   <title>App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+ <style>
+  body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #ff4d6d, #ff758c);
+    min-height: 100vh;
+    color: white;
+    padding-right: 30px;
+  }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: linear-gradient(135deg, #ff4d6d, #ff758c);
-  min-height: 100vh;
-  color: white;
-  padding-right: 30px;
+ .container {
+  display: flex;
+  align-items: flex-start;  
+  justify-content: space-around;
+  padding-top: 40px;
 }
 
-.site-title {
-  color: #ff4d6d;
-  background: white;
+  .box {
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+  }
+
+  input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+
+  button {
+    width: 95%;
+    padding: 12px;
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  a {
+    color: #ff4d6d;
+    cursor: pointer;
+  }
+
+  .image img {
+    width: 400px;
+    border-radius: 20px;
+  }
+
+  /* 📱 الموبايل */
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .image {
+      order: -1;
+    }
+
+    .image img {
+      width: 250px;
+      margin-bottom: 20px;
+    }
+
+    .box {
+      width: 90%;
+      max-width: 350px;
+    }
+    /* 👇 Animation */
+#loginBox, #registerBox {
+  transition: opacity 0.4s ease;
+}
+  }
+   .site-title {
+  color: #ff4d6d;        
+  background: white;  
   font-size: 30px;
-  margin: 20px;
+  margin-bottom: 20px;
+  text-align: center;
   display: inline-block;
   padding: 10px 20px;
   border-radius: 15px;
 }
-
-.tagline-main {
+   .tagline-main {
+  color: white;
   font-size: 28px;
-  margin-bottom: 5px;
+  margin-top: 10px;
+  margin-bottom: 5px;   /* 👈 ضيف السطر ده */
   font-family: 'Tajawal', sans-serif;
 }
 
 .tagline-sub {
+  color: white;
   font-size: 20px;
   opacity: 0.9;
+  margin-top: 0;        /* 👈 ضيف السطر ده */
   margin-bottom: 20px;
   font-family: 'Tajawal', sans-serif;
 }
+   .image-right img {
+  width: 300px;
+  margin-top: 20px;
+}
+   .container {
+  align-items: flex-start !important;
+}
 
 .box {
-  background: white;
-  color: black;
-  padding: 30px;
-  border-radius: 20px;
-  width: 320px;
-  text-align: center;
+  margin-top: -120px;  
+  margin-left: 30px;    
+}
+  .box {
   position: absolute;
-  top: 100px;
-  left: 30px;
-}
-
-input {
-  width: 90%;
-  padding: 12px;
-  margin: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
-
-button {
-  width: 95%;
-  padding: 12px;
-  background: #ff4d6d;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-}
-
-a {
-  color: #ff4d6d;
-  cursor: pointer;
-}
-
-.image {
-  position: absolute;
-  right: 80px;
-  top: 200px;
-}
-
-.image img {
-  width: 400px;
-  border-radius: 20px;
-}
-
-.intro-text {
-  position: absolute;
-  top: 420px;
-  left: 30px;
-  width: 600px;   
-  color: white;
-  line-height: 1.8;
-  font-size: 16px;
-  text-align: right;
-}
+  top: 20px;    
+  left: 20px;   
+  margin: 0;     
+} 
+ 
 </style>
 </head>
 
 <body>
+ <h1 class="site-title">💖 شريك العمر</h1>
+  <p class="tagline-main"> مكان يجمع القلوب الباحثة عن الاستقرار</p>
+<p class="tagline-sub"> لقاء بسيط… قد يغيّر حياتك للأبد</p>
+   <!-- الصورة -->
+    <div class="image">
+      <img src="couple.png">
+    </div>
+  <div class="container">
 
-<h1 class="site-title">💖 شريك العمر</h1>
+    <!-- الفورم -->
+    <div class="box">
 
-<p class="tagline-main">مكان يجمع القلوب الباحثة عن الاستقرار</p>
-<p class="tagline-sub">لقاء بسيط… قد يغيّر حياتك للأبد</p>
+      <!-- Login -->
+      <div id="loginBox">
+      
+<h2>تسجيل الدخول</h2>
 
-<div class="image">
-  <img src="couple.png">
-</div>
+        <input id="loginEmail" type="email" placeholder="الإيميل"><br>
+        <input id="loginPassword" type="password" placeholder="الباسورد"><br>
 
-<!-- الفورم -->
-<div class="box">
+        <button onclick="login()">دخول</button>
 
-  <div id="loginBox">
-    <h2>تسجيل الدخول</h2>
+        <p>ليس لديك حساب؟ <a onclick="showRegister()">سجل الآن</a></p>
+      </div>
+     
+      <!-- Register -->
+      <div id="registerBox" style="display:none; opacity:0;">
+        <h2>إنشاء حساب</h2>
 
-    <input id="loginEmail" type="email" placeholder="الإيميل"><br>
-    <input id="loginPassword" type="password" placeholder="الباسورد"><br>
+        <input id="name" type="text" placeholder="اسمك"><br>
+        <input id="email" type="email" placeholder="الإيميل"><br>
+        <input id="password" type="password" placeholder="الباسورد"><br>
 
-    <button onclick="login()">دخول</button>
+        <button onclick="register()">تسجيل</button>
 
-    <p>ليس لديك حساب؟ <a onclick="showRegister()">سجل الآن</a></p>
+        <p>عندك حساب؟ <a onclick="showLogin()">دخول</a></p>
+      </div>
+
+    </div>
+
+   
+
   </div>
 
-  <div id="registerBox" style="display:none; opacity:0;">
-    <h2>إنشاء حساب</h2>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    <input id="name" type="text" placeholder="اسمك"><br>
-    <input id="email" type="email" placeholder="الإيميل"><br>
-    <input id="password" type="password" placeholder="الباسورد"><br>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+      authDomain: "marriage-app-3b2d2.firebaseapp.com",
+      projectId: "marriage-app-3b2d2",
+    };
 
-    <button onclick="register()">تسجيل</button>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    <p>عندك حساب؟ <a onclick="showLogin()">دخول</a></p>
-  </div>
+    // تبديل بين Login و Register
+   window.showRegister = () => {
+  const login = document.getElementById("loginBox");
+  const register = document.getElementById("registerBox");
 
-</div>
+  login.style.opacity = "0";
 
-<div class="intro-text">
-  <p>"شريك العمر" مساحة تجمع القلوب الجادة الباحثة عن الاستقرار، حيث نقرّب المسافات ونفتح أبواب التعارف الحقيقي بين العرب في كل مكان.</p>
+  setTimeout(() => {
+    login.style.display = "none";
+    register.style.display = "block";
+    register.style.opacity = "1";
+  }, 200);
+};
+   window.showLogin = () => {
+  const login = document.getElementById("loginBox");
+  const register = document.getElementById("registerBox");
 
-  <p>نوفّر لك بيئة آمنة لاكتشاف أشخاص يشاركونك نفس القيم والطموحات، مع خيارات واسعة تساعدك على العثور على من يناسب شخصيتك وتفاصيل حياتك.</p>
+  register.style.opacity = "0";
 
-  <p>ابدأ رحلتك الآن، فقد تكون أقرب خطوة هي بداية قصة تدوم.</p>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
-  authDomain: "marriage-app-3b2d2.firebaseapp.com",
-  projectId: "marriage-app-3b2d2",
+  setTimeout(() => {
+    register.style.display = "none";
+    login.style.display = "block";
+    login.style.opacity = "1";
+  }, 200);
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    // تسجيل دخول
+    window.login = () => {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
 
-window.showRegister = () => {
-  loginBox.style.display = "none";
-  registerBox.style.display = "block";
-};
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          localStorage.setItem("userEmail", email);
+          window.location.href = "dashboard.html";
+        })
+        .catch(e => alert(e.message));
+    };
 
-window.showLogin = () => {
-  registerBox.style.display = "none";
-  loginBox.style.display = "block";
-};
+    // تسجيل
+    window.register = () => {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-window.login = () => {
-  const email = loginEmail.value;
-  const password = loginPassword.value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async () => {
+          await addDoc(collection(db, "users"), {
+            name: name,
+            age: 20,
+            image: "https://randomuser.me/api/portraits/men/1.jpg"
+          });
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      localStorage.setItem("userEmail", email);
-      window.location.href = "dashboard.html";
-    })
-    .catch(e => alert(e.message));
-};
-
-window.register = () => {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(async () => {
-      await addDoc(collection(db, "users"), {
-        name: name,
-        age: 20,
-        image: "https://randomuser.me/api/portraits/men/1.jpg"
-      });
-
-      alert("تم إنشاء الحساب");
-      showLogin();
-    })
-    .catch(e => alert(e.message));
-};
-</script>
+          alert("تم إنشاء الحساب");
+          showLogin();
+        })
+        .catch(e => alert(e.message));
+    };
+  </script>
 
 </body>
 </html>
