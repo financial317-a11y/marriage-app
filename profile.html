@@ -145,7 +145,8 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
   authDomain: "marriage-app-3b2d2.firebaseapp.com",
@@ -154,40 +155,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-  window.saveProfile = async () => {
-
-  const name = document.getElementById("name").value;
-  const age = document.getElementById("age").value;
-  const job = document.getElementById("job").value;
-
-  const userEmail = localStorage.getItem("userEmail");
-
-  if (!userEmail) {
-    alert("مش مسجل دخول");
-    return;
-  }
-
-  await setDoc(doc(db, "users", userEmail), {
-    name: name,
-    age: age,
-    job: job,
-    email: userEmail
-  });
-
-  alert("تم الحفظ ✅");
-};
-  const userEmail = localStorage.getItem("userEmail");
-
-const docRef = doc(db, "users", userEmail);
-const docSnap = await getDoc(docRef);
-
-if (docSnap.exists()) {
-  const data = docSnap.data();
-
-  document.getElementById("name").value = data.name || "";
-  document.getElementById("age").value = data.age || "";
-  document.getElementById("job").value = data.job || "";
-}
 
 // الأعمار
 for (let i = 18; i <= 60; i++) {
@@ -208,7 +175,6 @@ let imageBase64 = "";
 
 /* حفظ */
 window.saveProfile = async () => {
-   alert("اشتغل ✅");
   const profile = {
     gender: document.getElementById("gender").value,
     name: document.getElementById("name").value,
@@ -224,17 +190,35 @@ window.saveProfile = async () => {
     image: imageBase64
   };
 
-  const userEmail = localStorage.getItem("userEmail");
+  await addDoc(collection(db, "users"), profile);
 
-  await setDoc(doc(db, "users", userEmail), profile);
+  // 🟢 حفظ محلي
+  localStorage.setItem("profileData", JSON.stringify(profile));
 
- 
   alert("تم حفظ البروفايل ✅");
 
   showProfile(profile);
 };
 
+/* عرض البروفايل */
+function showProfile(data) {
+  document.getElementById("formBox").style.display = "none";
+  document.getElementById("profileView").style.display = "block";
 
+  document.getElementById("profileView").innerHTML = `
+    <img src="${data.image}" width="100" style="border-radius:50%"><br><br>
+    <b>${data.name}</b><br>
+    ${data.age} سنة<br>
+    ${data.country}<br>
+    ${data.job}<br>
+    ${data.status}<br>
+    ${data.religion}<br>
+    ${data.education}<br>
+    أطفال: ${data.children}<br>
+    الطول: ${data.height}<br>
+    الوزن: ${data.weight}
+  `;
+}
 
 /* تحميل البيانات */
 const saved = JSON.parse(localStorage.getItem("profileData"));
