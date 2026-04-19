@@ -240,6 +240,15 @@ document.getElementById("fileInput").addEventListener("change", function() {
 
   reader.readAsDataURL(file);
 });
+  const viewer = localStorage.getItem("userEmail");
+const profileOwner = localStorage.getItem("viewUser");
+
+if (viewer !== profileOwner) {
+  await addDoc(collection(db, "visits"), {
+    from: viewer,
+    to: profileOwner
+  });
+}
 </script>
 
 </body>
