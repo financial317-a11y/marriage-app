@@ -169,7 +169,7 @@ function showUser() {
       <p>💼 ${user.job}</p>
       <p>📏 ${user.height}</p>
 
-      <button onclick="like()">❤️</button>
+      <button onclick="likeUser('EMAIL_HERE')">❤️</button>
       <button onclick="skip()">❌</button>
     </div>
   `;
@@ -243,6 +243,16 @@ window.goLikes = () => {
 
 window.goVisits = () => {
   window.location.href = "visits.html";
+};
+  window.likeUser = async (targetUser) => {
+  const currentUser = localStorage.getItem("userEmail");
+
+  await addDoc(collection(db, "likes"), {
+    from: currentUser,
+    to: targetUser
+  });
+
+  alert("تم الإعجاب ❤️");
 };
 </script>
 
