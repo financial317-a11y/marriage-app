@@ -145,8 +145,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+import { getFirestore, collection, addDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
   authDomain: "marriage-app-3b2d2.firebaseapp.com",
@@ -190,7 +189,9 @@ window.saveProfile = async () => {
     image: imageBase64
   };
 
-  await addDoc(collection(db, "users"), profile);
+  const userEmail = localStorage.getItem("userEmail");
+
+await setDoc(doc(db, "users", userEmail), profile);
 
   // 🟢 حفظ محلي
   localStorage.setItem("profileData", JSON.stringify(profile));
