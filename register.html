@@ -83,11 +83,9 @@
 
          const email = document.getElementById("email").value;
 
-         await addDoc(collection(db, "users"), {
-           name: name,
-           age: 20,
-           image: image
-         }); 
+        await setDoc(doc(db, "users", user.email), {
+  email: user.email
+}); 
 
          alert("تم إنشاء الحساب 🎉");
        })
