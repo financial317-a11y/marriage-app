@@ -228,9 +228,7 @@ window.saveProfile = async () => {
 
   await setDoc(doc(db, "users", userEmail), profile);
 
-  // 🟢 حفظ محلي
-  localStorage.setItem("profileData", JSON.stringify(profile));
-
+ 
   alert("تم حفظ البروفايل ✅");
 
   showProfile(profile);
