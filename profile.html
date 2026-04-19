@@ -234,25 +234,7 @@ window.saveProfile = async () => {
   showProfile(profile);
 };
 
-/* عرض البروفايل */
-function showProfile(data) {
-  document.getElementById("formBox").style.display = "none";
-  document.getElementById("profileView").style.display = "block";
 
-  document.getElementById("profileView").innerHTML = `
-    <img src="${data.image}" width="100" style="border-radius:50%"><br><br>
-    <b>${data.name}</b><br>
-    ${data.age} سنة<br>
-    ${data.country}<br>
-    ${data.job}<br>
-    ${data.status}<br>
-    ${data.religion}<br>
-    ${data.education}<br>
-    أطفال: ${data.children}<br>
-    الطول: ${data.height}<br>
-    الوزن: ${data.weight}
-  `;
-}
 
 /* تحميل البيانات */
 const saved = JSON.parse(localStorage.getItem("profileData"));
