@@ -154,6 +154,28 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+  window.saveProfile = async () => {
+
+  const name = document.getElementById("name").value;
+  const age = document.getElementById("age").value;
+  const job = document.getElementById("job").value;
+
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (!userEmail) {
+    alert("مش مسجل دخول");
+    return;
+  }
+
+  await setDoc(doc(db, "users", userEmail), {
+    name: name,
+    age: age,
+    job: job,
+    email: userEmail
+  });
+
+  alert("تم الحفظ ✅");
+};
   const userEmail = localStorage.getItem("userEmail");
 
 const docRef = doc(db, "users", userEmail);
