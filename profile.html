@@ -145,7 +145,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -155,6 +155,18 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+  const userEmail = localStorage.getItem("userEmail");
+
+const docRef = doc(db, "users", userEmail);
+const docSnap = await getDoc(docRef);
+
+if (docSnap.exists()) {
+  const data = docSnap.data();
+
+  document.getElementById("name").innerText = data.name || "";
+  document.getElementById("age").innerText = data.age || "";
+  document.getElementById("job").innerText = data.job || "";
+}
 
 // الأعمار
 for (let i = 18; i <= 60; i++) {
@@ -192,8 +204,6 @@ window.saveProfile = async () => {
 
   await addDoc(collection(db, "users"), profile);
 
-  // 🟢 حفظ محلي
-  localStorage.setItem("profileData", JSON.stringify(profile));
 
   alert("تم حفظ البروفايل ✅");
 
@@ -219,12 +229,7 @@ function showProfile(data) {
     الوزن: ${data.weight}
   `;
 }
-
-/* تحميل البيانات */
-const saved = JSON.parse(localStorage.getItem("profileData"));
-if (saved) {
-  showProfile(saved);
-}
+const 
 
 /* صورة */
 document.getElementById("fileInput").addEventListener("change", function() {
