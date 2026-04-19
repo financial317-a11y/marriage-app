@@ -48,7 +48,6 @@
 
 </head>
 <body>
-  <div id="list"></div>
 
   <h1>❤️ الناس اللي عملت لك لايك</h1>
 
@@ -86,35 +85,6 @@ if (like.likedUser === currentUser) {
     }
 
     loadLikes();
-    import { getFirestore, collection, query, where, onSnapshot } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const db = getFirestore();
-const currentUser = localStorage.getItem("userEmail");
-
-const q = query(
-  collection(db, "likes"),
-  where("to", "==", currentUser)
-);
-
-onSnapshot(q, (snapshot) => {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
-  snapshot.forEach(doc => {
-    const data = doc.data();
-
-    list.innerHTML += `
-      <div onclick="openProfile('${data.from}')">
-        ❤️ ${data.from}
-      </div>
-    `;
-  });
-});
-    window.openProfile = (email) => {
-  localStorage.setItem("viewUser", email);
-  window.location.href = "profile.html";
-};
   </script>
 
 </body>
