@@ -169,8 +169,8 @@ function showUser() {
       <p>💼 ${user.job}</p>
       <p>📏 ${user.height}</p>
 
-     <button onclick="likeUser(this, 'EMAIL_HERE')">❤️</button>
-      <button onclick="dislikeUser(this)">❌</button>
+      <button onclick="like()">❤️</button>
+      <button onclick="skip()">❌</button>
     </div>
   `;
 }
@@ -243,38 +243,6 @@ window.goLikes = () => {
 
 window.goVisits = () => {
   window.location.href = "visits.html";
-};
-window.likeUser = async (btn, targetUser) => {
-
-  // 🔥 حفظ اللايك
-  const currentUser = localStorage.getItem("userEmail");
-
-  await addDoc(collection(db, "likes"), {
-    from: currentUser,
-    to: targetUser
-  });
-
-  // 🔥 الحركة القديمة (يمين)
-  const card = btn.closest(".card");
-  card.style.transform = "translateX(200px)";
-  card.style.opacity = "0";
-
-  setTimeout(() => {
-    card.remove();
-  }, 300);
-};
-
-  alert("تم الإعجاب ❤️");
-};
-  window.dislikeUser = (btn) => {
-  const card = btn.closest(".card");
-
-  card.style.transform = "translateX(-200px)";
-  card.style.opacity = "0";
-
-  setTimeout(() => {
-    card.remove();
-  }, 300);
 };
 </script>
 
