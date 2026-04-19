@@ -11,9 +11,52 @@
   </style>
 </head>
 <body>
+  <div id="list"></div>
 
 <h1>👁️ الزيارات</h1>
 <p>هنا هتشوف الناس اللي زارتك 👀</p>
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, query, where, onSnapshot } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
+  authDomain: "marriage-app-3b2d2.firebaseapp.com",
+  projectId: "marriage-app-3b2d2",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const currentUser = localStorage.getItem("userEmail");
+
+const q = query(
+  collection(db, "visits"),
+  where("to", "==", currentUser)
+);
+
+onSnapshot(q, (snapshot) => {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+
+    list.innerHTML += `
+      <div onclick="openProfile('${data.from}')">
+        👁️ ${data.from}
+      </div>
+    `;
+  });
+});
+
+window.openProfile = (email) => {
+  localStorage.setItem("viewUser", email);
+  window.location.href = "profile.html";
+};
+
+</script>
 </body>
 </html>
