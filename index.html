@@ -199,8 +199,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
       authDomain: "marriage-app-3b2d2.firebaseapp.com",
@@ -258,11 +257,12 @@
 
       createUserWithEmailAndPassword(auth, email, password)
         .then(async () => {
-          await addDoc(collection(db, "users"), {
-            name: name,
-            age: 20,
-            image: "https://randomuser.me/api/portraits/men/1.jpg"
-          });
+         const user = auth.currentUser;
+
+await setDoc(doc(db, "users", user.email), {
+  name: name,
+  email: user.email
+});
 
           alert("تم إنشاء الحساب");
           showLogin();
