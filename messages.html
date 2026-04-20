@@ -47,7 +47,14 @@ const currentUser = localStorage.getItem("userEmail");
 const list = document.getElementById("list");
 
 async function loadChats() {
-  const snapshot = await getDocs(collection(db, "messages"));
+  import { query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const q = query(
+  collection(db, "messages"),
+  where("to", "==", currentUser)
+);
+
+const snapshot = await getDocs(q);
 
   let users = {};
 
