@@ -60,7 +60,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -81,9 +81,11 @@
       createUserWithEmailAndPassword(auth, email, password)
         .then(async () => {
 
-         const email = document.getElementById("email").value;
+ const user = auth.currentUser;
 
-        await setDoc(doc(db, "users", user.email), {
+await setDoc(doc(db, "users", user.email), {
+  name: name,
+  image: image,
   email: user.email
 }); 
 
