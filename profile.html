@@ -145,7 +145,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, addDoc, collection }from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -156,6 +156,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
   const userEmail = localStorage.getItem("userEmail");
+  import { addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const visitor = localStorage.getItem("userEmail");
+const profileOwner = userEmail;
+
+if (visitor && visitor !== profileOwner) {
+  await addDoc(collection(db, "visits"), {
+    from: visitor,
+    to: profileOwner,
+    time: Date.now()
+  });
+}
 
 const docRef = doc(db, "users", userEmail);
 const docSnap = await getDoc(docRef);
