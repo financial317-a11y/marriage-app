@@ -180,12 +180,12 @@ for (let i = 40; i <= 120; i++) {
 
  if (docSnap.exists()) {
   const data = docSnap.data();
+   if (data.age && data.height && data.weight) {
    
   document.getElementById("name").value = data.name || "";
   document.getElementById("age").value = data.age || "";
   document.getElementById("job").value = data.job || "";
 
-  // عرض الصورة كمان
   if (data.image) {
     imageBase64 = data.image;
     document.querySelector(".upload-box").innerHTML =
