@@ -181,6 +181,10 @@ const docSnap = await getDoc(docRef);
 // 🟢 3) بعد كده حط القيم
 if (docSnap.exists()) {
   const data = docSnap.data();
+    if (!data.name) {
+    // مفيش بيانات → سيب الفورم يظهر
+    return;
+  }
 
   document.getElementById("name").value = data.name || "";
   document.getElementById("age").value = data.age || "";
