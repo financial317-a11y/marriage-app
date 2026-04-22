@@ -205,7 +205,7 @@ window.saveProfile = async () => {
     image: imageBase64
   };
 
-  await addDoc(collection(db, "users"), profile);
+  await setDoc(doc(db, "users", userEmail), profile);
 
 
   alert("تم حفظ البروفايل ✅");
