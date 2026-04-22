@@ -181,20 +181,24 @@ const docSnap = await getDoc(docRef);
 // 🟢 3) بعد كده حط القيم
 if (docSnap.exists()) {
   const data = docSnap.data();
-    if (!data.name) {
-    // مفيش بيانات → سيب الفورم يظهر
-     } else {
+
+  // 👇 لو البيانات ناقصة → ما تعرضش البروفايل
+  if (data.name && data.age) {
+
+    document.getElementById("name").value = data.name || "";
+    document.getElementById("age").value = data.age || "";
+    document.getElementById("job").value = data.job || "";
+
+    if (data.image) {
+      imageBase64 = data.image;
+      document.querySelector(".upload-box").innerHTML =
+        `<img src="${data.image}">`;
+    }
+
+    showProfile(data);
   }
 
-  document.getElementById("name").value = data.name || "";
-  document.getElementById("age").value = data.age || "";
-  document.getElementById("job").value = data.job || "";
-   if (data.image) {
-    imageBase64 = data.image;
-    document.querySelector(".upload-box").innerHTML =
-      `<img src="${data.image}">`;
-  }
-  showProfile(data);
+  // ❗ لو مفيش بيانات → ما تعملش حاجة (الفورم يفضل ظاهر)
 }
 
 let imageBase64 = "";
