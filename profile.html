@@ -155,18 +155,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-  const userEmail = localStorage.getItem("userEmail");
+const userEmail = localStorage.getItem("userEmail");
 
-const docRef = doc(db, "users", userEmail);
-const docSnap = await getDoc(docRef);
-
-if (docSnap.exists()) {
-  const data = docSnap.data();
-
-  document.getElementById("name").value = data.name || "";
-  document.getElementById("age").value = data.age || "";
-  document.getElementById("job").value = data.job || "";
-}
+// 🟢 1) املا القوائم الأول
 
 // الأعمار
 for (let i = 18; i <= 60; i++) {
@@ -183,8 +174,20 @@ for (let i = 40; i <= 120; i++) {
   document.getElementById("weight").innerHTML += `<option>${i} كجم</option>`;
 }
 
-let imageBase64 = "";
+// 🟢 2) بعد كده هات البيانات
+const docRef = doc(db, "users", userEmail);
+const docSnap = await getDoc(docRef);
 
+// 🟢 3) بعد كده حط القيم
+if (docSnap.exists()) {
+  const data = docSnap.data();
+
+  document.getElementById("name").value = data.name || "";
+  document.getElementById("age").value = data.age || "";
+  document.getElementById("job").value = data.job || "";
+}
+
+let imageBase64 = "";
 /* حفظ */
 window.saveProfile = async () => {
   const profile = {
