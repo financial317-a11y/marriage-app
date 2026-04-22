@@ -94,14 +94,11 @@
 
   <label>الدولة</label>
   <select id="country">
-  <option>مصر</option>
-  <option>السعودية</option>
-  <option>الإمارات</option>
-  <option>المغرب</option>
-  <option>سوريا</option>
-  <option>تونس</option>
-  <option>الفلبين</option>
-</select>
+    <option>مصر</option>
+    <option>السعودية</option>
+    <option>الإمارات</option>
+    <option>المغرب</option>
+  </select>
 
   <label>المهنة</label>
   <input id="job" placeholder="المهنة">
@@ -148,7 +145,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, addDoc, collection }from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMLCut70fC5IQE-GlY5uPn9Ti6sUye2Yk",
@@ -159,32 +156,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
   const userEmail = localStorage.getItem("userEmail");
-  import { addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const visitor = localStorage.getItem("userEmail");
-const profileOwner = userEmail;
-
-if (visitor && visitor !== profileOwner) {
-  await addDoc(collection(db, "visits"), {
-    from: visitor,
-    to: profileOwner,
-    time: Date.now()
-  });
-}
-
+const docRef = doc(db, "users", userEmail);
+const docSnap = await getDoc(docRef);
 
 if (docSnap.exists()) {
-  if (data.image) {
-  imageBase64 = data.image;
-
-  document.querySelector(".upload-box").innerHTML =
-    `<img src="${data.image}">`;
-}
   const data = docSnap.data();
 
-  document.getElementById("name").value  = data.name || "";
-  document.getElementById("age").value  = data.age || "";
-  document.getElementById("job").value  = data.job || "";
+  document.getElementById("name").innerText = data.name || "";
+  document.getElementById("age").innerText = data.age || "";
+  document.getElementById("job").innerText = data.job || "";
 }
 
 // الأعمار
@@ -201,9 +182,7 @@ for (let i = 140; i <= 200; i++) {
 for (let i = 40; i <= 120; i++) {
   document.getElementById("weight").innerHTML += `<option>${i} كجم</option>`;
 }
-const docRef = doc(db, "users", userEmail);
-const docSnap = await getDoc(docRef);
-  
+
 let imageBase64 = "";
 
 /* حفظ */
@@ -220,12 +199,10 @@ window.saveProfile = async () => {
     children: document.getElementById("children").value,
     height: document.getElementById("height").value,
     weight: document.getElementById("weight").value,
-   image: imageBase64 || ""
+    image: imageBase64
   };
 
-const userEmail = localStorage.getItem("userEmail");
-
-await setDoc(doc(db, "users", userEmail), profile);
+  await addDoc(collection(db, "users"), profile);
 
 
   alert("تم حفظ البروفايل ✅");
@@ -252,7 +229,7 @@ function showProfile(data) {
     الوزن: ${data.weight}
   `;
 }
-
+const 
 
 /* صورة */
 document.getElementById("fileInput").addEventListener("change", function() {
