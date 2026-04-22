@@ -172,8 +172,6 @@ if (visitor && visitor !== profileOwner) {
   });
 }
 
-const docRef = doc(db, "users", userEmail);
-const docSnap = await getDoc(docRef);
 
 if (docSnap.exists()) {
   const data = docSnap.data();
@@ -197,7 +195,9 @@ for (let i = 140; i <= 200; i++) {
 for (let i = 40; i <= 120; i++) {
   document.getElementById("weight").innerHTML += `<option>${i} كجم</option>`;
 }
-
+const docRef = doc(db, "users", userEmail);
+const docSnap = await getDoc(docRef);
+  
 let imageBase64 = "";
 
 /* حفظ */
