@@ -185,6 +185,11 @@ if (docSnap.exists()) {
   document.getElementById("name").value = data.name || "";
   document.getElementById("age").value = data.age || "";
   document.getElementById("job").value = data.job || "";
+   if (data.image) {
+    imageBase64 = data.image;
+    document.querySelector(".upload-box").innerHTML =
+      `<img src="${data.image}">`;
+  }
   showProfile(data);
 }
 
