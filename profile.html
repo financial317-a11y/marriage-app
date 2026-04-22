@@ -94,11 +94,14 @@
 
   <label>الدولة</label>
   <select id="country">
-    <option>مصر</option>
-    <option>السعودية</option>
-    <option>الإمارات</option>
-    <option>المغرب</option>
-  </select>
+  <option>مصر</option>
+  <option>السعودية</option>
+  <option>الإمارات</option>
+  <option>المغرب</option>
+  <option>سوريا</option>
+  <option>تونس</option>
+  <option>الفلبين</option>
+</select>
 
   <label>المهنة</label>
   <input id="job" placeholder="المهنة">
@@ -211,7 +214,7 @@ window.saveProfile = async () => {
     children: document.getElementById("children").value,
     height: document.getElementById("height").value,
     weight: document.getElementById("weight").value,
-    image: imageBase64
+   image: imageBase64 || ""
   };
 
 const userEmail = localStorage.getItem("userEmail");
