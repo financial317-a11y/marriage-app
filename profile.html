@@ -182,8 +182,7 @@ const docSnap = await getDoc(docRef);
 if (docSnap.exists()) {
   const data = docSnap.data();
 
-  // 👇 لو البيانات ناقصة → ما تعرضش البروفايل
-  if (data.name && data.age) {
+  if (data.name && data.age && data.height && data.weight)
 
     document.getElementById("name").value = data.name || "";
     document.getElementById("age").value = data.age || "";
