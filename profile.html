@@ -174,7 +174,7 @@ for (let i = 40; i <= 120; i++) {
   document.getElementById("weight").innerHTML += `<option>${i} كجم</option>`;
 }
 
-const userEmail = localStorage.getItem("userEmail");
+
   const docRef = doc(db, "users", userEmail);
 const docSnap = await getDoc(docRef);
 
