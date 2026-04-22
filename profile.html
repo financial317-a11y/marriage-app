@@ -175,27 +175,37 @@ for (let i = 40; i <= 120; i++) {
 }
 
 
+ try {
   const docRef = doc(db, "users", userEmail);
-const docSnap = await getDoc(docRef);
+  const docSnap = await getDoc(docRef);
 
-// 🟢 3) بعد كده حط القيم
-if (docSnap.exists()) {
-  const data = docSnap.data();
+  if (docSnap.exists()) {
+    const data = docSnap.data();
 
-  if (data.name && data.age && data.height && data.weight)
+    const isComplete =
+      data.name &&
+      data.age &&
+      data.height &&
+      data.weight;
 
-    document.getElementById("name").value = data.name || "";
-    document.getElementById("age").value = data.age || "";
-    document.getElementById("job").value = data.job || "";
+    if (isComplete) {
+      document.getElementById("name").value = data.name || "";
+      document.getElementById("age").value = data.age || "";
+      document.getElementById("job").value = data.job || "";
 
-    if (data.image) {
-      imageBase64 = data.image;
-      document.querySelector(".upload-box").innerHTML =
-        `<img src="${data.image}">`;
+      if (data.image) {
+        imageBase64 = data.image;
+        document.querySelector(".upload-box").innerHTML =
+          `<img src="${data.image}">`;
+      }
+
+      showProfile(data);
     }
-
-    showProfile(data);
   }
+
+} catch (error) {
+  console.log("Firestore error:", error);
+}
 
   // ❗ لو مفيش بيانات → ما تعملش حاجة (الفورم يفضل ظاهر)
 }
