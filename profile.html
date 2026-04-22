@@ -163,9 +163,9 @@ const docSnap = await getDoc(docRef);
 if (docSnap.exists()) {
   const data = docSnap.data();
 
-  document.getElementById("name").innerText = data.name || "";
-  document.getElementById("age").innerText = data.age || "";
-  document.getElementById("job").innerText = data.job || "";
+  document.getElementById("name").value = data.name || "";
+  document.getElementById("age").value = data.age || "";
+  document.getElementById("job").value = data.job || "";
 }
 
 // الأعمار
