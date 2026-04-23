@@ -163,7 +163,7 @@ function showUser() {
 
  usersDiv.innerHTML += `
   <div class="card">
-    <img src="${user.image}">
+   <img src="${user.image}" data-email="${user.email}" style="cursor:pointer">
       </div>
 `;
   document.querySelectorAll(".card img").forEach((img, index) => {
