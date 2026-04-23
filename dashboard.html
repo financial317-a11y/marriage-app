@@ -161,9 +161,11 @@ function showUser() {
 
   const user = users[index];
 
-  usersDiv.innerHTML = `
-   <div class="card" onclick="openProfile('${user.email}')">
-      <img src="${user.image}"><br><br>
+  usersDiv.innerHTML += `
+  <div class="card">
+    <img src="${user.image}" onclick="openProfile('${user.email}')" style="cursor:pointer">
+  </div>
+`;
       <h3>${user.name} - ${user.age} سنة</h3>
       <p>📍 ${user.country}</p>
       <p>💼 ${user.job}</p>
