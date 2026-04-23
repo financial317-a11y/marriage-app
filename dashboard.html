@@ -162,7 +162,7 @@ function showUser() {
   const user = users[index];
 
   usersDiv.innerHTML = `
-    <div class="card">
+   <div class="card" onclick="openProfile('${user.email}')">
       <img src="${user.image}"><br><br>
       <h3>${user.name} - ${user.age} سنة</h3>
       <p>📍 ${user.country}</p>
@@ -243,6 +243,10 @@ window.goLikes = () => {
 
 window.goVisits = () => {
   window.location.href = "visits.html";
+};
+  window.openProfile = (email) => {
+  localStorage.setItem("viewUser", email);
+  window.location.href = "profile.html";
 };
 </script>
 
