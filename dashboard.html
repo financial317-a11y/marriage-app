@@ -132,8 +132,10 @@ function showPreview() {
 
   users.slice(0, 5).forEach(user => {
     const img = document.createElement("img");
-    img.src = user.image;
-    previewDiv.appendChild(img);
+img.src = user.image;
+img.dataset.name = user.name; 
+img.style.cursor = "pointer"; 
+previewDiv.appendChild(img);
   });
 }
 
