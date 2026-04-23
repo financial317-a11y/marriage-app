@@ -178,11 +178,9 @@ for (let i = 40; i <= 120; i++) {
   const docRef = doc(db, "users", userEmail);
   const docSnap = await getDoc(docRef);
 
- let data = null;
-
-if (docSnap.exists()) {
-  data = docSnap.data();
-
+ if (docSnap.exists()) {
+  const data = docSnap.data();
+      
   document.getElementById("name").value = data.name || "";
   document.getElementById("age").value = data.age || "";
   document.getElementById("job").value = data.job || "";
@@ -192,12 +190,12 @@ if (docSnap.exists()) {
     document.querySelector(".upload-box").innerHTML =
       `<img src="${data.image}">`;
   }
-}
 
-
-if (data && data.age)
+  // 👇 لو عايز يعرض البروفايل مباشرة خليه
   showProfile(data);
+  }  
 }
+
 
 /* حفظ */
 window.saveProfile = async () => {
