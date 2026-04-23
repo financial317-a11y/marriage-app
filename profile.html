@@ -155,8 +155,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const userEmail = localStorage.getItem("userEmail");
-
+  
+const userEmail =
+  localStorage.getItem("viewUser") ||
+  localStorage.getItem("userEmail");
 let imageBase64 = "";
 
 // الأعمار
