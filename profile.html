@@ -180,7 +180,7 @@ for (let i = 40; i <= 120; i++) {
 
  let data = null;
 
-let data = null; // 👈 مهم جدًا
+let data = null;  
 
 if (docSnap.exists()) {
   data = docSnap.data();
@@ -196,7 +196,7 @@ if (docSnap.exists()) {
   }
 }
 
-// 👇 القرار هنا (برا if)
+
 if (data && data.age && data.height && data.weight) {
   showProfile(data);
 }
