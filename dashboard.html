@@ -251,7 +251,15 @@ window.goVisits = () => {
   localStorage.setItem("viewUser", name);
   window.location.href = "profile.html";
 };
+document.addEventListener("click", function(e) {
+  if (e.target.tagName === "IMG" && e.target.dataset.name) {
 
+    const name = e.target.dataset.name;
+
+    localStorage.setItem("viewUser", name);
+    window.location.href = "profile.html";
+  }
+});
 </script>
 
 </body>
