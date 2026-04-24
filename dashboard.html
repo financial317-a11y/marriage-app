@@ -247,12 +247,12 @@ window.goLikes = () => {
 window.goVisits = () => {
   window.location.href = "visits.html";
 };
-  window.openProfile = (name) => {
+window.openProfile = (email) => {
   localStorage.setItem("viewUser", name);
   window.location.href = "profile.html";
 };
 document.addEventListener("click", function(e) {
-  if (e.target.tagName === "IMG" && e.target.dataset.name) {
+ if (e.target.tagName === "IMG" && e.target.dataset.email) {
 
     const email = e.target.dataset.email;
 localStorage.setItem("viewUser", email);
