@@ -133,7 +133,7 @@ function showPreview() {
   users.slice(0, 5).forEach(user => {
     const img = document.createElement("img");
 img.src = user.image;
-img.dataset.name = user.name; 
+img.dataset.email = user.id;
 img.style.cursor = "pointer"; 
 previewDiv.appendChild(img);
   });
@@ -143,7 +143,7 @@ async function loadUsers() {
   const querySnapshot = await getDocs(collection(db, "users"));
 
   querySnapshot.forEach((doc) => {
-    users.push(doc.data());
+    users.push({ id: doc.id, ...doc.data() });
   });
 
   showPreview(); // 👈 مهم
@@ -165,7 +165,7 @@ function showUser() {
 
  usersDiv.innerHTML += `
   <div class="card">
-<img src="${user.image}" onclick="openProfile('${user.name}')" style="cursor:pointer"><br><br>
+<img src="${user.image}" onclick="openProfile('${user.id}')" style="cursor:pointer"><br><br>
     
       <h3>${user.name} - ${user.age} سنة</h3>
       <p>📍 ${user.country}</p>
@@ -254,9 +254,8 @@ window.goVisits = () => {
 document.addEventListener("click", function(e) {
   if (e.target.tagName === "IMG" && e.target.dataset.name) {
 
-    const name = e.target.dataset.name;
-
-    localStorage.setItem("viewUser", name);
+    const email = e.target.dataset.email;
+localStorage.setItem("viewUser", email);
     window.location.href = "profile.html";
   }
 });
