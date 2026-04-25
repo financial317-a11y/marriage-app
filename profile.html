@@ -258,6 +258,11 @@ document.getElementById("fileInput").addEventListener("change", function() {
 
   reader.readAsDataURL(file);
 });
+window.goProfile = () => {
+  localStorage.removeItem("viewUser"); 
+  window.location.href = "profile.html";
+};
+  
 </script>
 
 </body>
