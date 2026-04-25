@@ -159,6 +159,7 @@ const db = getFirestore(app);
 const userEmail =
   localStorage.getItem("viewUser") ||
   localStorage.getItem("userEmail");
+  console.log("OPEN PROFILE:", userEmail);
 
 let imageBase64 = "";
 
